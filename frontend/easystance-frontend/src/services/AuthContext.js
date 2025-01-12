@@ -5,46 +5,59 @@ import config from '../config/config';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [authUser, setAuthUser] = useState(null);
+    const [token, setToken] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        const savedToken = localStorage.getItem('token');
+        if (savedToken) {
+            setToken(savedToken);
+        }
+        setIsLoading(false);
+    }, []);
 
     useEffect(() => {
         const checkAuth = async () => {
+            if(!token) return;
+
             try {
-                const response = await fetch(`${config.apiUrl}${config.endpoints.getUser}`, {
-                    credentials: 'include'
+                const response = await fetch(`${config.apiUrl}${config.endpoints.checkAuth}`, {
+                    headers: { 'Authorization': token }
                 });
-                if (response.ok) {
-                    const data = await response.json();
-                    setAuthUser(data.user);
-                } else {
-                    setAuthUser(null);
+    
+                if (!response.ok) {
+                    setToken(null);
+                    localStorage.removeItem('token');
+                    navigate('/login');
                 }
-            } catch {
-                setAuthUser(null);
+            } catch (error) {
+                setToken(null);
+                localStorage.removeItem('token');
+                navigate('/login');
             }
         };
+
         checkAuth();
-    }, []);
+    }, [token, navigate]);
 
     const login = async (email, password) => {
         try {
             const response = await fetch(`${config.apiUrl}${config.endpoints.login}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({ email, password })
             });
 
-            if (response.ok) {
+            if(response.ok) {
                 const data = await response.json();
-                setAuthUser(data.user);
+                setToken(data.token);
+                localStorage.setItem('token', data.token);
                 navigate('/home');
             } else {
-                throw new Error('Accesso negato')
+                throw new Error('Email o password non validi')
             }
         } catch (error) {
-            console.error(error.message);
             throw error;
         }
     }
@@ -52,19 +65,19 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await fetch(`${config.apiUrl}${config.endpoints.logout}`, {
-                method: 'POST',
-                credentials: 'include'
+                method: 'POST'
             });
-            setAuthUser(null);
-            navigate('/login');
         } catch (error) {
-            console.error(error.message)
             throw error;
+        } finally {
+            setToken(null);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     }
 
     return (
-        <AuthContext.Provider value={{ authUser, login, logout }}>
+        <AuthContext.Provider value={{ token, isLoading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

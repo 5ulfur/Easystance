@@ -1,14 +1,18 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./components/AuthContext";
+import { AuthProvider, useAuth } from "./services/AuthContext";
 import Login from "./components/Login";
 import Home from "./components/Home";
-
-//import './App.css';
+import NotFound from "./components/NotFound";
 
 function PrivateRoute({ children }) {
-  const { authUser } = useAuth();
-  return authUser ? children : <Navigate to="/login" />;
+  const { token, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
+  return token ? children : <Navigate to="/login" />;
 }
 
 function App() {
@@ -29,8 +33,16 @@ function App() {
             }
           />
           <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="*"
-            element={<Navigate to="/login" />}
+            element={<NotFound />}
           />
         </Routes>
       </AuthProvider>

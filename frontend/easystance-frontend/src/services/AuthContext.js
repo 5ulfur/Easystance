@@ -49,13 +49,13 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ email, password })
             });
 
+            const data = await response.json();
             if(response.ok) {
-                const data = await response.json();
-                setToken(data.token);
-                localStorage.setItem('token', data.token);
+                setToken('Bearer ' + data.token);
+                localStorage.setItem('token', 'Bearer ' + data.token);
                 navigate('/home');
             } else {
-                throw new Error('Email o password non validi')
+                throw new Error(data.error);
             }
         } catch (error) {
             throw error;
@@ -65,7 +65,8 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await fetch(`${config.apiUrl}${config.endpoints.logout}`, {
-                method: 'POST'
+                method: 'POST',
+                headers: { 'Authorization': token }
             });
         } catch (error) {
             throw error;

@@ -1,7 +1,7 @@
-function NotFound() {
+const NotFound = () => {
     return (
         <div>
-            <p>404 - Page Not Found</p>
+            <h1>404 - Page Not Found</h1>
         </div>
     );
 };

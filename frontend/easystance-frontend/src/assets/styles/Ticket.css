@@ -1,0 +1,33 @@
+.ticket {
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 3px 3px #000000;
+  transition: background-color 0.3s ease;
+}
+
+.ticket:hover {
+  background-color: #cccccc;
+}
+
+.ticket-details {
+  margin: 5px 0;
+  color: #333333;
+}
+
+.priority-low {
+  color: #818018;
+}
+
+.priority-medium {
+  color: #d37f00;
+}
+
+.priority-high {
+  color: #ff0000;
+}
+
+.priority-critical {
+  color: #800000;
+}

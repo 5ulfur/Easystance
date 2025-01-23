@@ -4,6 +4,28 @@ const Customers = require("../models/Customers");
 const Employees = require("../models/Employees");
 const RevokedTokens = require("../models/RevokedTokens");
 
+exports.verifyToken = async (req, res, next) => {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return res.status(401).json({ error: "Token mancante!" });
+    }
+
+    try {
+        const token = authHeader.split(" ")[1];
+
+        const isTokenRevoked = await RevokedTokens.findOne({ where: { token } });
+        if (isTokenRevoked) {
+            return res.status(401).json({ error: "Token non valido!" });
+        }
+
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decodedToken;
+        next();
+    } catch (error) {
+        return res.status(401).json({ error: "Token non valido!" });
+    }
+};
+
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -31,37 +53,16 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-    const authHeader = req.headers["authorization"];
-    if (!authHeader) {
-        return res.status(401).json({ error: "Token mancante!" });
-    }
-
     try {
-        const token = authHeader.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-
         await RevokedTokens.create({ token });
         res.json({ message: "Logout effettuato!" });
     } catch (error) {
-        return res.status(401).json({ error: "Token non valido!" });
+        return res.status(401).json({ error: "Errore del server!" });
     }
 };
 
 exports.checkAuth = async (req, res) => {
-    const authHeader = req.headers["authorization"];
-    if (!authHeader) {
-        return res.status(401).json({ error: "Token mancante!" });
-    }
-
     try {
-        const token = authHeader.split(" ")[1];
-
-        const isTokenRevoked = await RevokedTokens.findOne({ where: { token } });
-        if (isTokenRevoked) {
-            return res.status(401).json({ error: "Token non valido!" });
-        }
-
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         res.json({ message: "Autorizzato!" });
     } catch (error) {
         return res.status(401).json({ error: "Token non valido!" });

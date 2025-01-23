@@ -1,0 +1,28 @@
+{
+    "app_name": "Easystance",
+    "slogan": "L'assistenza facile",
+    "login": "Accedi",
+    "filters": "Filtri",
+    "search": "Cerca",
+    "category": "Categoria",
+    "category_values": {
+        "help": "Aiuto",
+        "repair": "Riparazione",
+        "maintenance": "Manutenzione"
+    },
+    "priority": "Priorità",
+    "priority_values": {
+        "low": "Bassa",
+        "medium": "Media",
+        "high": "Alta",
+        "critical": "Critica"
+    },
+    "status": "Stato",
+    "status_values": {
+        "open": "Aperto",
+        "in_progress": "In corso",
+        "closed": "Chiuso"
+    },
+    "new_ticket": "NUOVO TICKET",
+    "error_no_tickets": "Nessun ticket da mostrare!"
+}

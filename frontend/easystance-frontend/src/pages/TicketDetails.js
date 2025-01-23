@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
+import Navbar from "../components/Navbar";
 import config from "../config/config";
 import "../assets/styles/TicketDetails.css";
 
 const TicketDetails = () => {
     const { id } = useParams();
     const [ticket, setTicket] = useState([]);
-    const { token } = useAuth();
+    const { token, role } = useAuth();
 
     useEffect(() => {
         const getTickets = async () => {
@@ -27,11 +28,11 @@ const TicketDetails = () => {
         };
 
         getTickets();
-    }, [token]);
+    }, [token, id]);
 
     return (
         <div className="ticket-details-page">
-            <h1>NAVBAR</h1>
+            <Navbar role={role}/>
             <div className="ticket-details-container">
                 <h2>{t(`ticket_details`)}</h2>
                 <h3 className="">{ticket.subject}</h3>

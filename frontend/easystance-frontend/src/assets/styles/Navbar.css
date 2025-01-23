@@ -1,0 +1,36 @@
+.navbar-container {
+    background-color: #85b0b8;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-container img {
+    width: 80px;
+    height: auto;
+}
+
+.navbar-menu {
+    flex: 1;
+    display: flex;
+    height: 100%;
+}
+
+.navbar-item {
+    flex: 1;
+    border-left: 1px solid #62878d;
+    font-size: 30px;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    align-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-item:hover {
+    background-color: #71959b;
+}
+
+.navbar-item.active {
+    background-color: #dbdbdb;
+    font-weight: bold;
+}

@@ -132,7 +132,7 @@ const Home = () => {
           onFilterChange={handleFilterChange}
         />
         <main className="tickets-list-container">
-          {role === "operator" || role === "administrator" && <button>{t(`new_ticket`)}</button>}
+          {(role === "operator" || role === "administrator") && <button>{t(`new_ticket`)}</button>}
           <div className="tickets-list" ref={listRef} onScroll={handleScroll}>
             {tickets.map((ticket) => (
               <Link to={`/ticket/${ticket.id}`} key={ticket.id} style={{ textDecoration: "none", color: "inherit" }}>

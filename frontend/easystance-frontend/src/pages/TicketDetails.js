@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
+import { t } from "../translations/translations";
 import config from "../config/config";
-import Ticket from "../components/Ticket";
+import "../assets/styles/TicketDetails.css";
 
 const TicketDetails = () => {
     const { id } = useParams();
@@ -29,13 +30,24 @@ const TicketDetails = () => {
     }, [token]);
 
     return (
-        <div>
-            <Ticket
-                  subject={ticket.subject}
-                  category={ticket.category}
-                  priority={ticket.priority}
-                  status={ticket.status}
-                />
+        <div className="ticket-details-page">
+            <h1>NAVBAR</h1>
+            <div className="ticket-details-container">
+                <h2>{t(`ticket_details`)}</h2>
+                <h3 className="">{ticket.subject}</h3>
+                <p className="">
+                    <strong>{t(`description`)}:</strong> {ticket.description}
+                </p>
+                <p className="">
+                    <strong>{t(`category`)}:</strong> {t(`category_values.${ticket.category}`)}
+                </p>
+                <p className="">
+                    <strong>{t(`priority`)}:</strong> <span className="">{t(`priority_values.${ticket.priority}`)}</span>
+                </p>
+                <p className="">
+                    <strong>{t(`status`)}:</strong> {t(`status_values.${ticket.status}`)}
+                </p>
+            </div>
         </div>
     );
 };

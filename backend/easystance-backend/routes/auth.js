@@ -1,5 +1,5 @@
 const express = require("express");
-const { login, logout, checkAuth } = require("../controllers/auth");
+const { verifyToken, login, logout, checkAuth } = require("../controllers/auth");
 
 const router = express.Router();
 
@@ -7,9 +7,9 @@ const router = express.Router();
 router.post("/login", login);
 
 // Endpoint: /auth/logout
-router.post("/logout", logout);
+router.post("/logout", verifyToken, logout);
 
 // Endpoint: /auth/check
-router.get("/check", checkAuth);
+router.get("/check", verifyToken, checkAuth);
 
 module.exports = router;

@@ -1,9 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./services/AuthContext";
-import Login from "./components/Login";
-import Home from "./components/Home";
-import NotFound from "./components/NotFound";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import TicketDetails from "./pages/TicketDetails";
+import NotFound from "./pages/NotFound";
+import "./App.css";
 
 function PrivateRoute({ children }) {
   const { token, isLoading } = useAuth();
@@ -29,6 +31,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ticket/:id"
+            element={
+              <PrivateRoute>
+                <TicketDetails />
               </PrivateRoute>
             }
           />

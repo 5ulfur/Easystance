@@ -1,16 +1,18 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import config from '../config/config';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import config from "../config/config";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
+    const [role, setRole] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     
     useEffect(() => {
-        const savedToken = localStorage.getItem('token');
+        const savedToken = localStorage.getItem("token");
         if (savedToken) {
             setToken(savedToken);
         }
@@ -19,22 +21,21 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            if(!token) return;
+            if (!token) return;
 
             try {
                 const response = await fetch(`${config.apiUrl}${config.endpoints.checkAuth}`, {
-                    headers: { 'Authorization': token }
+                    headers: { "Authorization": token }
                 });
     
                 if (!response.ok) {
-                    setToken(null);
-                    localStorage.removeItem('token');
-                    navigate('/login');
+                    clear();
+                } else {
+                    const decoded = jwtDecode(token);
+                    setRole(decoded.role);
                 }
             } catch (error) {
-                setToken(null);
-                localStorage.removeItem('token');
-                navigate('/login');
+                clear();
             }
         };
 
@@ -44,16 +45,16 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const response = await fetch(`${config.apiUrl}${config.endpoints.login}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();
-            if(response.ok) {
-                setToken('Bearer ' + data.token);
-                localStorage.setItem('token', 'Bearer ' + data.token);
-                navigate('/home');
+            if (response.ok) {
+                setToken("Bearer " + data.token);
+                localStorage.setItem("token", "Bearer " + data.token);
+                navigate("/home");
             } else {
                 throw new Error(data.error);
             }
@@ -65,20 +66,25 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await fetch(`${config.apiUrl}${config.endpoints.logout}`, {
-                method: 'POST',
-                headers: { 'Authorization': token }
+                method: "POST",
+                headers: { "Authorization": token }
             });
         } catch (error) {
             throw error;
         } finally {
-            setToken(null);
-            localStorage.removeItem('token');
-            navigate('/login');
+            clear();
         }
     }
 
+    function clear() {
+        setToken(null);
+        setRole(null);
+        localStorage.removeItem("token");
+        navigate("/login");
+    }
+
     return (
-        <AuthContext.Provider value={{ token, isLoading, login, logout }}>
+        <AuthContext.Provider value={{ token, role, isLoading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

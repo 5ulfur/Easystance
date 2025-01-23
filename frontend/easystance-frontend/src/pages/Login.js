@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useAuth } from '../services/AuthContext';
-import "./Login.css";
-import logo from '../assets/logo.png';
+import React, { useState } from "react";
+import { useAuth } from "../services/AuthContext";
+import { t } from "../translations/translations";
+import logo from "../assets/images/logo.png";
+import "../assets/styles/Login.css";
 
-function Login() {
+const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -22,8 +23,8 @@ function Login() {
         <div class="login-container">
             <div class="login-left">
                 <img src={logo} alt="Logo"/>
-                <h1>Easystance</h1>
-                <p>L'assistenza facile</p>
+                <h2>{t(`app_name`)}</h2>
+                <p>{t(`slogan`)}</p>
             </div>
             <div class="login-right">
                 <form class="login-form" onSubmit={handleLogin}>
@@ -41,7 +42,7 @@ function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit">Login</button>
+                    <button type="submit">{t(`login`)}</button>
                     {error && <p class="error-box">{error}</p>}
                 </form>
             </div>

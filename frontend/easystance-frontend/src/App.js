@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import TicketDetails from "./pages/TicketDetails";
 import NotFound from "./pages/NotFound";
 import "./App.css";
+import Options from "./components/Options";
 
 function PrivateRoute({ children }) {
   const { token, isLoading } = useAuth();
@@ -39,6 +40,14 @@ function App() {
             element={
               <PrivateRoute>
                 <TicketDetails />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/options"
+            element= {
+              <PrivateRoute>
+                <Options/>
               </PrivateRoute>
             }
           />

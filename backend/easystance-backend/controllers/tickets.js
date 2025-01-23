@@ -5,6 +5,8 @@ exports.getTicket = async (req, res) => {
   const id = parseInt(req.query.id);
 
   try {
+    //AGGIUNGERE CONTROLLO SUL RUOLO DELL'UTENTE PER NON PERMETTERE A CLIENTI DI VEDERE TICKETS
+
     const ticket = await Tickets.findOne({ where: { id } });
     if (ticket) {
       res.json({ ticket });

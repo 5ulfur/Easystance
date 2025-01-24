@@ -26,5 +26,11 @@
     "new_ticket": "NUOVO TICKET",
     "ticket_details": "Dettagli ticket",
     "description": "Descrizione",
-    "error_no_tickets": "Nessun ticket da mostrare!"
+    "error_no_tickets": "Nessun ticket da mostrare!",
+    "roles_values": {
+        "customer": "Cliente",
+        "administrator": "Amministratore",
+        "operator": "Operatore",
+        "technician": "Tecnico"
+    }
 }

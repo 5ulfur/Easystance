@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import TicketDetails from "./pages/TicketDetails";
 import NotFound from "./pages/NotFound";
 import "./App.css";
-import Options from "./components/Options";
+import Settings from "./pages/Settings";
 
 function PrivateRoute({ children }) {
   const { token, isLoading } = useAuth();
@@ -44,10 +44,10 @@ function App() {
             }
           />
           <Route
-            path="/options"
+            path="/settings"
             element= {
               <PrivateRoute>
-                <Options/>
+                <Settings />
               </PrivateRoute>
             }
           />

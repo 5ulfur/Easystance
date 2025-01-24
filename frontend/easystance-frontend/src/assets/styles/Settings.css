@@ -1,0 +1,154 @@
+/*container principale*/
+.settings-container {
+    background-color: white;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+
+/*parte sinistra della pagina*/ 
+
+.left-side {
+    width: 25%;
+    height: 100%;
+    border: 1px solid black;
+}
+
+.left-menu button{
+    width: 100%;
+    height: auto;
+    font-size: 28px;
+    padding: 15px;
+    background-color: white;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid black;
+}
+
+.left-menu button:hover {
+    background-color: rgba(0, 0, 0, .18);
+    transition: background-color 0.3s ease;
+}
+
+
+/*parte destra della pagina*/
+
+.right-side {
+    width: 75%;
+    height: 100%;
+}
+.right-side h1 {
+    font-weight: bold;
+    font-size: 28;
+}
+
+.right-side h2 {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.right-side h3 {
+    font-weight: 300;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.right-side button {
+    width: 240px;
+    height: 40px;
+    border-radius: 50px;
+    border: none;
+    background-color: rgba(0, 0, 0, .18);
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+
+/*informazioni generali*/
+
+.general-information {
+    display: grid;
+    width: 45%;
+    height: auto;
+    grid-template-columns: 1fr 1fr;
+    margin-left: 15%;
+    margin-top: 40px;
+}
+
+.general-information h2 {
+    color: #404040;
+}
+
+.left-information,
+.right-information {
+    margin-top: 20px;
+}
+
+
+/*Puoi modificare*/
+
+.can-modify {
+    width: 85%;
+    height: auto;
+    margin-left: 15%;
+    margin-top: 60px;
+}
+
+.can-modify form {
+    margin-top: 20px;
+}
+
+.can-modify input {
+    font-size: 16px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    height: 42px;
+    width: 420px;
+    padding: 5px;
+}
+
+.can-modify button {
+    margin-top: 20px;
+    margin-left: 100px;
+}
+
+
+/*Cambio password*/
+
+.change-password {
+    width: 85%;
+    height: auto;
+    margin-left: 15%;
+    margin-top: 60px;
+}
+
+.change-password form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.change-password input {
+    font-size: 16px;
+    margin-bottom: 25px;
+    margin-right: 150px;
+    border-radius: 10px;
+    height: 42px;
+    width: 420px;
+    padding: 5px;
+}
+
+.change-password button {
+    margin-top: 30px;
+}
+
+.editButton {
+    margin-left: 105px;
+}
+
+.delete-button {
+    margin-left: 105px;
+    color: red;
+}

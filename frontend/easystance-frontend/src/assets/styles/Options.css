@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: stretch;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     background-color: white;
 }
@@ -10,9 +10,8 @@
 .sidebar{
     border: 1px solid black;
     font-size: 32px;
-    width: 33%;
     height: 100%;
-    float: left;
+    width: 20%;
     background-color: white;
     
 }
@@ -28,6 +27,7 @@
 }
 .left-sidebar button:hover {
     font-size: 26px;
+    margin-left: 0;
 }
 
 .button-active{
@@ -58,7 +58,7 @@
 .button-popup {
     display: flex;
     justify-content: space-between;
-    width: 70%;
+    width: 100%;
     padding: 20px;
 }
 
@@ -74,22 +74,14 @@
 /*right-side*/
 
 .right-list {
-    float: right;
     background-color: white;
     display: grid;
     place-items: center;
+    width: 80%;
 }
 
 .right-list h1 {
     margin: 20px;
-}
-
-.box {
-    border: 1px solid black;
-    margin: 20px;
-    font-size: 24px;
-    text-align: center;
-    padding: 10px;    
 }
 
 .changes {
@@ -109,10 +101,9 @@
     background-color: white;
     display: flex;
     gap: 10px;
-}
-
-.change-password input {
-    margin: auto;
+    width: 70%;
+    justify-content: space-between;
+    margin: 20px;
 }
 
 .changes:hover {
@@ -132,6 +123,7 @@
     background-color: white;
     display: grid;
     place-items: center;
+    margin: 20px;
 }
 
 .deleate-profile:hover {
@@ -139,12 +131,18 @@
     transition: background-color 0.4s;
 }
 
-.right-list input{
+.email input, .number input {
+    font-size: 28px;
+    width: 70%;
     border: 1px solid black;
-    font-size: 24px;
-    padding: 10px;
-    width: 40%;
-    height: 70px;
+}
+
+.change-password input {
+    font-size: 28px;
+    width: 42%;
+    border: 1px solid black;
+    height: 77px;
+
 }
 
 .email, .number{
@@ -157,12 +155,11 @@
     grid-template-columns: 0.2fr 0.55fr;
 }
 
-.name p {
-    text-align: center;
-    font-size: 24px;
+.name, .surname, .email, .number {
+    width: 50%;
 }
 
-.surname p {
+.name p, .surname p{
     text-align: center;
-    font-size: 24px;
+    font-size: 28px;
 }

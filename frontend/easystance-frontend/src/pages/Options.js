@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import "./Options.css";
+import "../assets/styles/Options.css";
 import config from "../config/config";
 import { useAuth } from '../services/AuthContext';
 
 function Options() {
-    const[name, setName] = useState('');
-    const[surname, setSurname] = useState('');
+    const[name, setName] = useState('pippo');
+    const[surname, setSurname] = useState('giuann');
     const[token, setToken] = useState('');
     let[email, setEmail] = useState('');
     let[number, setNumber] = useState('');
@@ -40,10 +40,10 @@ function Options() {
     const savedChanges = async () => {
         if (validateEmail(email)) {
             try {
-                const response = await fetch(`${config.apiUrl}${config.endpoints.savedChanges}`, {
-                    method: 'POST',
-                    headers: {'Authorization': token},
-                    body: JSON.stringify({ email, number })
+                    const response = await fetch(`${config.apiUrl}${config.endpoints.savedChanges}`, {
+                        method: 'POST',
+                        headers: {'Authorization': token},
+                        body: JSON.stringify({ email, number })
                 });
                 if(!response.ok){
                     throw new Error('Errore nella richiesta');

@@ -3,7 +3,7 @@ const config = {
     endpoints: {
         login: "/auth/login",
         logout: "/auth/logout",
-        getData: "data/user",
+        getData: "/data/user",
         checkAuth: "/auth/check",
         getTicket: "/tickets/ticket",
         getTicketsList: "/tickets/list",

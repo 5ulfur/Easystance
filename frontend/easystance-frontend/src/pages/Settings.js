@@ -9,10 +9,16 @@ const Settings = () => {
     const[surname, setSurname] = useState('');
     const[email, setEmail] = useState('');
     const[phoneNumber, setPhoneNumber] = useState('');
-    const[password, setPassword] = useState('');
+    const[oldPassword, setOldPassword] = useState('');
+    const[newPassword, setNewPassword] = useState('');
+    const[insertPassword, setInsertPassword] = useState('');
     const[password1, setPassword1] = useState('');
     const[password2, setPassword2] = useState('');
-    const {token, role} = useAuth();
+    const{token, role} = useAuth();
+    const[showPopup, setShowPopup] = useState(false);
+    const[gray, setGray] = useState(true);
+    const { logout } = useAuth();
+    const[viewPassword, setViewPassword] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,6 +32,7 @@ const Settings = () => {
             setSurname(data.surname);
             setEmail(data.email);
             setPhoneNumber(data.phoneNumber);
+            setOldPassword(data.oldPassword);
 
             } catch (error) {
             console.error("Errore nel recupero dei dati:", error);
@@ -33,7 +40,40 @@ const Settings = () => {
         };
     });
 
+
+    {/*parte sinistra*/}
+
+    const handleProfile = async () => {
+        setShowPopup(false);
+    }
+
+
+    {/*popup*/}
+
+    const handleShowPopup = async () => {
+
+        setShowPopup(true);
+        setGray(false);
+    }
+
+    const handleCancel = async () => {
+        setShowPopup(false);
+        setGray(true);
+    }
+
+    const handleLogout = async (e) => {
+        try {
+            await logout();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+    {/*parte destra*/}
+
     const handleSave = async (e) => {
+        e.preventDefault();
         try {
             const response = await fetch(`${config.apiUrl}${config.endpoints.editEmail}`, {
                 method: "POST",
@@ -49,12 +89,60 @@ const Settings = () => {
         }
     }
 
-    const handleChangePassword = () => {
-
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+        if(insertPassword === oldPassword) {
+            if(password1 === password2 ) {
+                setNewPassword(oldPassword);
+                try {
+                    const response = await fetch(`${config.apiUrl}${config.endpoints.editPassword}`, {
+                        method: "POST",
+                        headers: {"Authorizzation": token, "content-type": "application/json"},
+                        body: JSON.stringify({ newPassword })
+                    });
+                    if(!response.ok){
+                        throw new Error("Errore nella richiesta");
+                    }
+                    const data = await response.json();
+                } catch (error) {
+                    throw error;
+                }
+            } else {
+                alert('le password che hai inserito non sono uguali!')
+            }
+        } else {
+            alert('La password che hai inserito non corrisponde a quella che avevi in precedenza')
+        }
     }
 
-    const handleDeletePassword = () => {
+    const handleDeletePassword = async (e) => {
+        e.preventDefault();
+        const handleClick = async () => {
+            try {
+                const response = await fetch(`${config.apiUrl}${config.endpoints.deleateProfile}`, {
+                    method: "POST",
+                    headers: {"Authorization": token, "content-Type": "application/json"},
+                    body: JSON.stringify({flag:true}),
+                });
 
+                if (!response.ok) {
+                    throw new Error("Errore durante l'aggiornamento");
+                }
+
+                const result = await response.json();
+                alert("Flag aggiornata con successo!");
+            } catch(error) {
+                console.error('Errore:', error);
+                alert("Errore durante l\'invio della flag");
+            }
+        }
+
+    }
+    
+    {/*visibilità password*/}
+
+    const toggleViewPassword = () => {
+        setViewPassword(!viewPassword);
     }
 
     return (
@@ -62,10 +150,14 @@ const Settings = () => {
             {/*<Navbar />*/}
             <div className="left-side">
                 <aside className="left-menu">
-                    <button>    
+                    <button
+                        className={gray === true ? "left-menu-gray" : "left-menu-white"}
+                        onClick={() => handleProfile()}>    
                     Profilo
                     </button>
-                    <button>
+                    <button
+                        className={gray !== true ? "left-menu-gray" : "left-menu-white"}
+                        onClick={() => handleShowPopup()}>
                     Logout
                     </button>
                 </aside>
@@ -109,10 +201,12 @@ const Settings = () => {
                         <div className="change-password-left">
                             <h3>Vecchia password</h3>
                             <input
-                                type="password"
+                                type={viewPassword ? "text" : "password"}
                                 placeholder="vecchia password"
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => setInsertPassword(e.target.value)}
                                 required/>
+                            <span
+                                onClick={toggleViewPassword}>{viewPassword ? 'X' : '👁'}</span>
                         </div>
                         <div className="change-password-right">
                             <h3>Nuova password</h3>
@@ -130,9 +224,23 @@ const Settings = () => {
                         </div>
                         <button className="editButton" type="submit">Modifica password</button>
                     </form>
-                    <button className="delete-button" onChange={handleDeletePassword}>Elimina profilo</button>
+                    <button className="delete-button" onClick={handleDeletePassword}>Elimina profilo</button>
                 </div>
             </div>
+            {showPopup && (
+                <div className="show-popup">
+                    <div className="popup">
+                        <h1>Logout</h1>
+                        <p>Sei sicuro di voler uscire?</p>
+                        <div className="button-popup">
+                            <button
+                                onClick={() => handleLogout()}>SI</button>
+                            <button
+                                onClick={() => handleCancel()}>NO</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
 
     );

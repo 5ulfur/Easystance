@@ -7,6 +7,48 @@
 }
 
 
+/*popup*/
+
+.show-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, .8);
+    text-align: center;
+    justify-content: center;
+    display: grid;
+}
+
+.popup {
+    background-color: gray;
+    width: 350px;
+    height: 180px;
+    border-radius: 20px;
+    text-align: center;
+    margin-top: 40vh;
+    color: white;
+}
+
+.popup h1 {
+    margin:15px;
+}
+
+.popup button {
+    font-size: 24px;
+    margin-top: 40px;
+    margin-inline: 50px;
+    width: 40px;
+    height: auto;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+
 /*parte sinistra della pagina*/ 
 
 .left-side {
@@ -20,14 +62,18 @@
     height: auto;
     font-size: 28px;
     padding: 15px;
-    background-color: white;
     text-align: left;
     border: none;
     border-bottom: 1px solid black;
 }
 
-.left-menu button:hover {
+.left-menu-gray {
     background-color: rgba(0, 0, 0, .18);
+    transition: background-color 0.3s ease;
+}
+
+.left-menu-white {
+    background-color: white;
     transition: background-color 0.3s ease;
 }
 
@@ -133,7 +179,7 @@
 .change-password input {
     font-size: 16px;
     margin-bottom: 25px;
-    margin-right: 150px;
+    margin-right: -35px;
     border-radius: 10px;
     height: 42px;
     width: 420px;

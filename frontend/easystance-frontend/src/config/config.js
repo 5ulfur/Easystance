@@ -3,12 +3,13 @@ const config = {
     endpoints: {
         login: "/auth/login",
         logout: "/auth/logout",
-        getData: "/data/user",
         checkAuth: "/auth/check",
         getTicket: "/tickets/ticket",
         getTicketsList: "/tickets/list",
-        editEmail: "/settings/edit/email",
-        editPassword: "/settings/edit/password"
+        getData: "/settings/data/user",
+        setEmail: "/settings/data/email",
+        setPassword: "/settings/data/password",
+        deleteProfile: "/settings/data/delete"
     },
     language: "it"
 };

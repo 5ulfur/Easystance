@@ -75,7 +75,7 @@ const Settings = () => {
     const handleSave = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${config.apiUrl}${config.endpoints.editEmail}`, {
+            const response = await fetch(`${config.apiUrl}${config.endpoints.getEmail}`, {
                 method: "POST",
                 headers: {"authorization": token, "content-type": "application/json"},
                 body: JSON.stringify({email, phoneNumber})
@@ -95,7 +95,7 @@ const Settings = () => {
             if(password1 === password2 ) {
                 setNewPassword(oldPassword);
                 try {
-                    const response = await fetch(`${config.apiUrl}${config.endpoints.editPassword}`, {
+                    const response = await fetch(`${config.apiUrl}${config.endpoints.getPassword}`, {
                         method: "POST",
                         headers: {"Authorizzation": token, "content-type": "application/json"},
                         body: JSON.stringify({ newPassword })
@@ -119,7 +119,7 @@ const Settings = () => {
         e.preventDefault();
         const handleClick = async () => {
             try {
-                const response = await fetch(`${config.apiUrl}${config.endpoints.deleateProfile}`, {
+                const response = await fetch(`${config.apiUrl}${config.endpoints.deleteProfile}`, {
                     method: "POST",
                     headers: {"Authorization": token, "content-Type": "application/json"},
                     body: JSON.stringify({flag:true}),

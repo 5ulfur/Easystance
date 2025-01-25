@@ -9,13 +9,13 @@ import "../assets/styles/TicketDetails.css";
 const TicketDetails = () => {
     const { id } = useParams();
     const [ticket, setTicket] = useState([]);
-    const { token, role } = useAuth();
+    const { token } = useAuth();
 
     useEffect(() => {
         const getTickets = async () => {
             try {
                 const response = await fetch(`${config.apiUrl}${config.endpoints.getTicket}?id=${id}`, {
-                    headers: { 'Authorization': token }
+                    headers: { "Authorization": token }
                 });
 
                 if (response.ok) {
@@ -32,7 +32,7 @@ const TicketDetails = () => {
 
     return (
         <div className="ticket-details-page">
-            <Navbar role={role}/>
+            <Navbar/>
             <div className="ticket-details-container">
                 <h2>{t(`ticket_details`)}</h2>
                 <h3 className="">{ticket.subject}</h3>

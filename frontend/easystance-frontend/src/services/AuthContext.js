@@ -15,6 +15,8 @@ export const AuthProvider = ({ children }) => {
         const savedToken = localStorage.getItem("token");
         if (savedToken) {
             setToken(savedToken);
+            const decoded = jwtDecode(savedToken);
+            setRole(decoded.role);
         }
         setIsLoading(false);
     }, []);
@@ -37,9 +39,6 @@ export const AuthProvider = ({ children }) => {
     
                 if (!response.ok) {
                     clear();
-                } else {
-                    const decoded = jwtDecode(token);
-                    setRole(decoded.role);
                 }
             } catch (error) {
                 clear();
@@ -61,7 +60,9 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 setToken("Bearer " + data.token);
                 localStorage.setItem("token", "Bearer " + data.token);
-                navigate("/home");
+                const decoded = jwtDecode(data.token);
+                setRole(decoded.role);
+                navigate("/tickets");
             } else {
                 throw new Error(data.error);
             }

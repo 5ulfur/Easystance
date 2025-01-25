@@ -1,14 +1,22 @@
 const { Op } = require("sequelize");
 const Tickets = require("../models/Tickets");
+const Customers = require("../models/Customers");
 
 exports.getTicket = async (req, res) => {
   const id = parseInt(req.query.id);
 
   try {
-    //AGGIUNGERE CONTROLLO SUL RUOLO DELL'UTENTE PER NON PERMETTERE A CLIENTI DI VEDERE TICKETS
-
     const ticket = await Tickets.findOne({ where: { id } });
     if (ticket) {
+
+      if (req.user.role === "customer" && req.user.id !== ticket.customerId) {
+        return res.status(401).json({ error: "Autorizzazione negata!" });
+      }
+
+      if (req.user.role === "technician" && req.user.id !== ticket.technicianId) {
+        return res.status(401).json({ error: "Autorizzazione negata!" });
+      }
+
       res.json({ ticket });
     } else {
       return res.status(404).json({ error: "Nessun ticket con questo id!" });
@@ -18,7 +26,7 @@ exports.getTicket = async (req, res) => {
   }
 };
 
-exports.list = async (req, res) => {
+exports.listTickets = async (req, res) => {
   const { page, limit, filters } = req.body;
   const offset = (page - 1) * limit;
 
@@ -59,6 +67,38 @@ exports.list = async (req, res) => {
       hasMore: offset + tickets.length < count
     });
   } catch (error) {
+    return res.status(500).json({ error: "Errore del server!" });
+  }
+};
+
+exports.createTicket = async (req, res) => {
+  const { ticket } = req.body;
+
+  try {
+    if (req.user.role !== "operator" && req.user.role !== "administrator") {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const customer = await Customers.findOne({ where: { email: ticket.customerEmail } });
+
+    if (!customer) {
+      return res.status(404).json({ error: "Cliente non esistente!" });
+    }
+
+    const newTicket = await Tickets.create({
+      subject: ticket.subject,
+      description: ticket.description,
+      category: ticket.category,
+      priority: ticket.priority,
+      status: "open",
+      customerId: customer.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    res.json({ ticketId: newTicket.id });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 };

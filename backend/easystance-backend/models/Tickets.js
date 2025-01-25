@@ -8,11 +8,11 @@ const Tickets = sequelize.define("Tickets", {
         primaryKey: true
     },
     subject: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
         allowNull: false
     },
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false
     },
     category: {

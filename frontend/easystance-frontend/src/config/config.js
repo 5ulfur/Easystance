@@ -5,7 +5,8 @@ const config = {
         logout: "/auth/logout",
         checkAuth: "/auth/check",
         getTicket: "/tickets/ticket",
-        getTicketsList: "/tickets/list"
+        getTicketsList: "/tickets/list",
+        createTicket: "/tickets/create"
     },
     language: "it"
 };

@@ -1,4 +1,5 @@
 .navbar-container {
+    height: 100%;
     background-color: #85b0b8;
     display: flex;
     align-items: center;

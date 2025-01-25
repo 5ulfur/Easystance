@@ -5,9 +5,9 @@ import logo from "../assets/images/logo.png";
 import "../assets/styles/Login.css";
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const { login } = useAuth();
 
     const handleLogin = async (e) => {
@@ -43,7 +43,7 @@ const Login = () => {
                         required
                     />
                     <button type="submit">{t(`login`)}</button>
-                    {error && <p class="error-box">{error}</p>}
+                    {error && <p class="error-box"><strong>{error}</strong></p>}
                 </form>
             </div>
         </div>

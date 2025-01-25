@@ -21,6 +21,7 @@ app.use("/auth", authRoutes);
 Endpoints:
 /tickets/ticket
 /tickets/list
+/tickets/create
 */
 app.use("/tickets", ticketsRoutes);
 

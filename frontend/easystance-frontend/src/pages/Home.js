@@ -125,7 +125,7 @@ const Home = () => {
 
   return (
     <div className="tickets-page">
-      <Navbar role={role}/>
+      <Navbar/>
       <div className="tickets-container">
         <Filters
           title={t(`filters`)}
@@ -133,10 +133,12 @@ const Home = () => {
           onFilterChange={handleFilterChange}
         />
         <main className="tickets-list-container">
-          {(role === "operator" || role === "administrator") && <button>{t(`new_ticket`)}</button>}
+          <div className="new-ticket-button-container">
+            {(role === "operator" || role === "administrator") && <Link to="/tickets/create"><button>{t(`new_ticket`)}</button></Link>}
+          </div>
           <div className="tickets-list" ref={listRef} onScroll={handleScroll}>
             {tickets.map((ticket) => (
-              <Link to={`/ticket/${ticket.id}`} key={ticket.id} className="tickets-list-item">
+              <Link to={`/tickets/${ticket.id}`} key={ticket.id} className="tickets-list-item">
                 <Ticket
                   subject={ticket.subject}
                   category={ticket.category}
@@ -145,7 +147,7 @@ const Home = () => {
                 />
               </Link>
             ))}
-            {error && <p class="error-box">{error}</p>}
+            {error && <p class="error-box"><strong>{error}</strong></p>}
           </div>
         </main>
       </div>

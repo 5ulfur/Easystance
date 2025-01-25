@@ -1,6 +1,15 @@
+/*container navbar*/
+.container-navbar {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+
+}
+
 /*container principale*/
 .settings-container {
-    background-color: white;
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -47,6 +56,11 @@
     cursor: pointer;
     color: white;
 }
+ 
+/*popup elimina profilo*/
+.popup-delete-profile h1 {
+    color:red;
+}
 
 
 /*parte sinistra della pagina*/ 
@@ -55,6 +69,7 @@
     width: 25%;
     height: 100%;
     border: 1px solid black;
+    background-color: white;
 }
 
 .left-menu button{
@@ -68,7 +83,7 @@
 }
 
 .left-menu-gray {
-    background-color: rgba(0, 0, 0, .18);
+    background-color: #85b0b8;
     transition: background-color 0.3s ease;
 }
 
@@ -157,7 +172,7 @@
     margin-bottom: 25px;
     border-radius: 10px;
     height: 42px;
-    width: 420px;
+    width: 400px;
     padding: 5px;
 }
 
@@ -187,19 +202,17 @@
     margin-right: -35px;
     border-radius: 10px;
     height: 42px;
-    width: 420px;
+    width: 400px;
     padding: 5px;
 }
 
-.change-password button {
-    margin-top: 30px;
-}
-
-.editButton {
-    margin-left: 105px;
+.edit-button {
+    margin-left: 125px;
 }
 
 .delete-button {
-    margin-left: 105px;
+    margin-left: 125px;
+    margin-top: 25px;
+    margin-bottom: 25px;
     color: red;
 }

@@ -3,6 +3,7 @@ import "../assets/styles/Settings.css";
 import config from "../config/config";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
+import Navbar from "../components/Navbar";
 
 const Settings = () => {
     const[name, setName] = useState('');
@@ -19,6 +20,7 @@ const Settings = () => {
     const[gray, setGray] = useState(true);
     const { logout } = useAuth();
     const[viewPassword, setViewPassword] = useState(false);
+    const[showDeleteProfile, setShowDeleteProfile] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,7 +47,7 @@ const Settings = () => {
 
     const handleProfile = async () => {
         setShowPopup(false);
-    }
+    };
 
 
     {/*popup*/}
@@ -54,12 +56,13 @@ const Settings = () => {
 
         setShowPopup(true);
         setGray(false);
-    }
+    };
 
     const handleCancel = async () => {
         setShowPopup(false);
         setGray(true);
-    }
+        setShowDeleteProfile(false);
+    };
 
     const handleLogout = async (e) => {
         try {
@@ -67,6 +70,11 @@ const Settings = () => {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleShowDeleteProfile = async (e) => {
+        e.preventDefault();
+        setShowDeleteProfile(true);
     };
 
 
@@ -116,7 +124,6 @@ const Settings = () => {
     }
 
     const handleDeleteProfile = async (e) => {
-        e.preventDefault();
         const handleClick = async () => {
             try {
                 const response = await fetch(`${config.apiUrl}${config.endpoints.deleteProfile}`, {
@@ -146,103 +153,119 @@ const Settings = () => {
     }
 
     return (
-        <div className="settings-container">
-            {/*<Navbar />*/}
-            <div className="left-side">
-                <aside className="left-menu">
-                    <button
-                        className={gray === true ? "left-menu-gray" : "left-menu-white"}
-                        onClick={() => handleProfile()}>    
-                    Profilo
-                    </button>
-                    <button
-                        className={gray !== true ? "left-menu-gray" : "left-menu-white"}
-                        onClick={() => handleShowPopup()}>
-                    Logout
-                    </button>
-                </aside>
+        <div className="container-navbar">
+            <Navbar/>
+            <div className="settings-container">
+                <div className="left-side">
+                    <aside className="left-menu">
+                        <button
+                            className={gray === true ? "left-menu-gray" : "left-menu-white"}
+                            onClick={() => handleProfile()}>    
+                        Profilo
+                        </button>
+                        <button
+                            className={gray !== true ? "left-menu-gray" : "left-menu-white"}
+                            onClick={() => handleShowPopup()}>
+                        Logout
+                        </button>
+                    </aside>
+                </div>
+                <div className="right-side">
+                    <div className="general-information">
+                        <h1>Informazioni generali</h1> <br/>
+                        <div className="left-information">
+                            <h3>Nome</h3>
+                            <h2>{name}</h2>
+                            <h3>Ruolo</h3>
+                            <h2>{t(`roles_values.${role}`)}</h2>
+                        </div>
+                        <div className="right-information">
+                            <h3>Cognome</h3>
+                            <h2>{surname}</h2>
+                        </div>
+                    </div>
+                    <div className="can-modify">
+                        <h1>Puoi modificare</h1>
+                        <form onSubmit={handleSave}>
+                            <h3>Email</h3>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required/>
+                            <h3>Numero di telefono</h3>
+                            <input
+                                type="phoneNumber"
+                                placeholder="Numero di telefono"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                required/> <br/>
+                            <button type="submit">Salva modifiche</button>
+                        </form>
+                    </div>
+                    <div className="change-password">
+                        <form onSubmit={handleChangePassword}>
+                            <div className="change-password-left">
+                                <h3>Vecchia password</h3>
+                                <input
+                                    type={viewPassword ? "text" : "password"}
+                                    placeholder="vecchia password"
+                                    onChange={(e) => setInsertPassword(e.target.value)}
+                                    required/>
+                                <span
+                                    onClick={toggleViewPassword}>{viewPassword ? 'X' : '👁'}</span>
+                            </div>
+                            <div className="change-password-right">
+                                <h3>Nuova password</h3>
+                                <input
+                                    type="password"
+                                    placeholder="Nuova password"
+                                    onChange={(e) => setPassword1(e.target.value)}
+                                    required/>
+                                <h3>Conferma password</h3>
+                                <input
+                                    type="password"
+                                    placeholder="Conferma password"
+                                    onChange={(e) => setPassword2(e.target.value)}
+                                    required/>
+                            </div>
+                            <button className="edit-button" type="submit">Modifica password</button>
+                        </form>
+                        {(t(`roles_values.${role}`)) === 'Cliente' && (
+                            <button className="delete-button" onClick={handleShowDeleteProfile}>Elimina profilo</button>
+                        )}
+                    </div>
+                </div>
+                {showPopup && (
+                    <div className="show-popup">
+                        <div className="popup">
+                            <h1>Logout</h1>
+                            <p>Sei sicuro di voler uscire?</p>
+                            <div className="button-popup">
+                                <button
+                                    onClick={() => handleLogout()}>SI</button>
+                                <button
+                                    onClick={() => handleCancel()}>NO</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {showDeleteProfile && (
+                    <div className="show-popup">
+                        <div className="popup popup-delete-profile">
+                            <h1>Elimina profilo</h1>
+                            <p>Sei sicuro di voler eliminare il profilo?</p>
+                            <div className="button-popup">
+                                <button
+                                    onClick={() => handleDeleteProfile()}>SI</button>
+                                <button
+                                    onClick={() => handleCancel()}>NO</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
-            <div className="right-side">
-                <div className="general-information">
-                    <h1>Informazioni generali</h1> <br/>
-                    <div className="left-information">
-                        <h3>Nome</h3>
-                        <h2>{name}</h2>
-                        <h3>Ruolo</h3>
-                        <h2>{t(`roles_values.${role}`)}</h2>
-                    </div>
-                    <div className="right-information">
-                        <h3>Cognome</h3>
-                        <h2>{surname}</h2>
-                    </div>
-                </div>
-                <div className="can-modify">
-                    <h1>Puoi modificare</h1>
-                    <form onSubmit={handleSave}>
-                        <h3>Email</h3>
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required/>
-                        <h3>Numero di telefono</h3>
-                        <input
-                            type="phoneNumber"
-                            placeholder="Numero di telefono"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                            required/> <br/>
-                        <button type="submit">Salva modifiche</button>
-                    </form>
-                </div>
-                <div className="change-password">
-                    <form onSubmit={handleChangePassword}>
-                        <div className="change-password-left">
-                            <h3>Vecchia password</h3>
-                            <input
-                                type={viewPassword ? "text" : "password"}
-                                placeholder="vecchia password"
-                                onChange={(e) => setInsertPassword(e.target.value)}
-                                required/>
-                            <span
-                                onClick={toggleViewPassword}>{viewPassword ? 'X' : '👁'}</span>
-                        </div>
-                        <div className="change-password-right">
-                            <h3>Nuova password</h3>
-                            <input
-                                type="password"
-                                placeholder="Nuova password"
-                                onChange={(e) => setPassword1(e.target.value)}
-                                required/>
-                            <h3>Conferma password</h3>
-                            <input
-                                type="password"
-                                placeholder="Conferma password"
-                                onChange={(e) => setPassword2(e.target.value)}
-                                required/>
-                        </div>
-                        <button className="editButton" type="submit">Modifica password</button>
-                    </form>
-                    {(t(`roles_values.${role}`)) === 'Cliente' && (
-                        <button className="delete-button" onClick={handleDeleteProfile}>Elimina profilo</button>
-                    )}
-                </div>
-            </div>
-            {showPopup && (
-                <div className="show-popup">
-                    <div className="popup">
-                        <h1>Logout</h1>
-                        <p>Sei sicuro di voler uscire?</p>
-                        <div className="button-popup">
-                            <button
-                                onClick={() => handleLogout()}>SI</button>
-                            <button
-                                onClick={() => handleCancel()}>NO</button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
 
     );

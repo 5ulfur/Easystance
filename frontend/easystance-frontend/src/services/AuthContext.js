@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import config from "../config/config";
@@ -18,6 +18,13 @@ export const AuthProvider = ({ children }) => {
         }
         setIsLoading(false);
     }, []);
+
+    const clear = useCallback(() => {
+        setToken(null);
+        setRole(null);
+        localStorage.removeItem("token");
+        navigate("/login");
+    }, [navigate]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -40,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         };
 
         checkAuth();
-    }, [token, navigate]);
+    }, [token, clear]);
 
     const login = async (email, password) => {
         try {
@@ -74,13 +81,6 @@ export const AuthProvider = ({ children }) => {
         } finally {
             clear();
         }
-    }
-
-    function clear() {
-        setToken(null);
-        setRole(null);
-        localStorage.removeItem("token");
-        navigate("/login");
     }
 
     return (

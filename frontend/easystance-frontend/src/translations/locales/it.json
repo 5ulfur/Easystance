@@ -2,6 +2,14 @@
     "app_name": "Easystance",
     "slogan": "L'assistenza facile",
     "login": "Accedi",
+    "navbar_values": {
+        "tickets": "TICKETS",
+        "technicians": "TECNICI",
+        "agenda": "AGENDA",
+        "warehouse": "MAGAZZINO",
+        "reports": "REPORTS",
+        "settings": "IMPOSTAZIONI"
+    },
     "filters": "Filtri",
     "search": "Cerca",
     "category": "Categoria",

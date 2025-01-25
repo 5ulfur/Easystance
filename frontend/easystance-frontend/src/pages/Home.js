@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
+import Navbar from "../components/Navbar";
 import Filters from "../components/Filters";
 import Ticket from "../components/Ticket";
 import config from "../config/config";
@@ -72,7 +73,7 @@ const Home = () => {
 
         const data = await response.json();
         if (response.ok) {
-          if (data.tickets == 0) {
+          if (data.tickets.length === 0) {
             setError(t(`error_no_tickets`));
           } else {
             setError(null);
@@ -124,7 +125,7 @@ const Home = () => {
 
   return (
     <div className="tickets-page">
-      <h1>NAVBAR</h1>
+      <Navbar role={role}/>
       <div className="tickets-container">
         <Filters
           title={t(`filters`)}
@@ -135,7 +136,7 @@ const Home = () => {
           {(role === "operator" || role === "administrator") && <button>{t(`new_ticket`)}</button>}
           <div className="tickets-list" ref={listRef} onScroll={handleScroll}>
             {tickets.map((ticket) => (
-              <Link to={`/ticket/${ticket.id}`} key={ticket.id} style={{ textDecoration: "none", color: "inherit" }}>
+              <Link to={`/ticket/${ticket.id}`} key={ticket.id} className="tickets-list-item">
                 <Ticket
                   subject={ticket.subject}
                   category={ticket.category}

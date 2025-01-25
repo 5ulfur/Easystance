@@ -112,6 +112,11 @@
     font-size: 16px;
 }
 
+.right-side button:hover {
+    background-color: rgba(0, 0, 0, .32);
+    transition: background-color 0.3s ease;
+}
+
 
 /*informazioni generali*/
 

@@ -75,7 +75,7 @@ const Settings = () => {
     const handleSave = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${config.apiUrl}${config.endpoints.getEmail}`, {
+            const response = await fetch(`${config.apiUrl}${config.endpoints.setEmail}`, {
                 method: "POST",
                 headers: {"authorization": token, "content-type": "application/json"},
                 body: JSON.stringify({email, phoneNumber})
@@ -95,7 +95,7 @@ const Settings = () => {
             if(password1 === password2 ) {
                 setNewPassword(oldPassword);
                 try {
-                    const response = await fetch(`${config.apiUrl}${config.endpoints.getPassword}`, {
+                    const response = await fetch(`${config.apiUrl}${config.endpoints.setPassword}`, {
                         method: "POST",
                         headers: {"Authorizzation": token, "content-type": "application/json"},
                         body: JSON.stringify({ newPassword })
@@ -115,7 +115,7 @@ const Settings = () => {
         }
     }
 
-    const handleDeletePassword = async (e) => {
+    const handleDeleteProfile = async (e) => {
         e.preventDefault();
         const handleClick = async () => {
             try {
@@ -224,7 +224,9 @@ const Settings = () => {
                         </div>
                         <button className="editButton" type="submit">Modifica password</button>
                     </form>
-                    <button className="delete-button" onClick={handleDeletePassword}>Elimina profilo</button>
+                    {(t(`roles_values.${role}`)) === 'Cliente' && (
+                        <button className="delete-button" onClick={handleDeleteProfile}>Elimina profilo</button>
+                    )}
                 </div>
             </div>
             {showPopup && (

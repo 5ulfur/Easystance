@@ -1,5 +1,5 @@
 const express = require("express");
-const {getData, getEmail, getPassword, getDelete} = require("../controllers/settings");
+const {getData, setEmail, setPassword, deleteProfile} = require("../controllers/settings");
 const { verifyToken } = require("../controllers/auth");
 
 const router = express.Router();
@@ -8,12 +8,12 @@ const router = express.Router();
 router.get("/settings", verifyToken, getData);
 
 // Endpoint: /settings/data/email
-router.post("/settings", verifyToken, getEmail);
+router.post("/settings", verifyToken, setEmail);
 
 // Endpoint: /settings/data/password
-router.post("/settings", verifyToken, getPassword);
+router.post("/settings", verifyToken, setPassword);
 
 // Endpoint: /settings/data/delete
-router.post("/settings", verifyToken, getDelete);
+router.post("/settings", verifyToken, deleteProfile);
 
 module.exports = router;

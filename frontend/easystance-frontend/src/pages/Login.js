@@ -20,14 +20,14 @@ const Login = () => {
     };
 
     return (
-        <div class="login-container">
-            <div class="login-left">
+        <div className="login-container">
+            <div className="login-left">
                 <img src={logo} alt="Logo"/>
                 <h2>{t(`app_name`)}</h2>
                 <p>{t(`slogan`)}</p>
             </div>
-            <div class="login-right">
-                <form class="login-form" onSubmit={handleLogin}>
+            <div className="login-right">
+                <form className="login-form" onSubmit={handleLogin}>
                     <input
                         type="email"
                         placeholder="E-mail"
@@ -43,7 +43,7 @@ const Login = () => {
                         required
                     />
                     <button type="submit">{t(`login`)}</button>
-                    {error && <p class="error-box"><strong>{error}</strong></p>}
+                    {error && <p className="error-box"><strong>{error}</strong></p>}
                 </form>
             </div>
         </div>

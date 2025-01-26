@@ -11,22 +11,26 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     
-    useEffect(() => {
-        const savedToken = localStorage.getItem("token");
-        if (savedToken) {
-            setToken(savedToken);
-            const decoded = jwtDecode(savedToken);
-            setRole(decoded.role);
-        }
-        setIsLoading(false);
-    }, []);
-
     const clear = useCallback(() => {
         setToken(null);
         setRole(null);
         localStorage.removeItem("token");
         navigate("/login");
     }, [navigate]);
+
+    useEffect(() => {
+        const savedToken = localStorage.getItem("token");
+        if (savedToken) {
+            setToken(savedToken);
+            try {
+                const decoded = jwtDecode(savedToken);
+                setRole(decoded.role);
+            } catch (error) {
+                clear();
+            }
+        }
+        setIsLoading(false);
+    }, [clear]);
 
     useEffect(() => {
         const checkAuth = async () => {

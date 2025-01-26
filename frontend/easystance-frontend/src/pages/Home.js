@@ -124,7 +124,7 @@ const Home = () => {
   };
 
   return (
-    <div className="tickets-page">
+    <div className="page">
       <Navbar/>
       <div className="tickets-container">
         <Filters
@@ -147,7 +147,7 @@ const Home = () => {
                 />
               </Link>
             ))}
-            {error && <p class="error-box"><strong>{error}</strong></p>}
+            {error && <p className="error-box"><strong>{error}</strong></p>}
           </div>
         </main>
       </div>

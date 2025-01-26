@@ -4,6 +4,7 @@ const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");
 const ticketsRoutes = require("./routes/tickets");
+const usersRoutes = require("./routes/users");
 
 const app = express();
 app.use(express.json());
@@ -24,6 +25,12 @@ Endpoints:
 /tickets/create
 */
 app.use("/tickets", ticketsRoutes);
+
+/*
+Endpoints:
+/users/technicians/list
+*/
+app.use("/users", usersRoutes);
 
 sequelize
     .authenticate()

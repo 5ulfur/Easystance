@@ -6,7 +6,8 @@ const config = {
         checkAuth: "/auth/check",
         getTicket: "/tickets/ticket",
         getTicketsList: "/tickets/list",
-        createTicket: "/tickets/create"
+        createTicket: "/tickets/create",
+        getTechniciansList: "/users/technicians/list"
     },
     language: "it"
 };

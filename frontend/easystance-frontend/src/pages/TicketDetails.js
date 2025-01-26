@@ -31,7 +31,7 @@ const TicketDetails = () => {
     }, [token, id]);
 
     return (
-        <div className="ticket-details-page">
+        <div className="page">
             <Navbar/>
             <div className="ticket-details-container">
                 <h2>{t(`ticket_details`)}</h2>

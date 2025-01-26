@@ -7,7 +7,8 @@ const config = {
         getTicket: "/tickets/ticket",
         getTicketsList: "/tickets/list",
         createTicket: "/tickets/create",
-        getTechniciansList: "/users/technicians/list"
+        getTechniciansList: "/users/technicians/list",
+        getComponentsList: "/warehouse/list"
     },
     language: "it"
 };

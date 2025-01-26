@@ -1,8 +1,9 @@
 import React from "react";
-import { useLocation, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
 import logo from "../assets/images/logo.png";
+import Breadcrumb from "./Breadcrumb";
 import "../assets/styles/Navbar.css";
 
 const Navbar = () => {
@@ -24,10 +25,8 @@ const Navbar = () => {
 
     const menu = roleMenu[role] || [{ title: "Login", to: "/login" }];
 
-    const location = useLocation();
-    const paths = location.pathname.split("/").filter(Boolean);
     return (
-        <div>
+        <div className="navbar">
             <div className="navbar-container">
                 <img src={logo} alt="Logo"/>
                 <div className="navbar-menu">
@@ -38,7 +37,7 @@ const Navbar = () => {
                     ))}
                 </div>
             </div>
-            <p>{location.pathname.replaceAll("/", ">")}</p>
+            <Breadcrumb/>
         </div>
     );
 }

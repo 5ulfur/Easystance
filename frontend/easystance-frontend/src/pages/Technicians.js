@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { debounce } from "lodash";
 import { Link } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
@@ -20,7 +21,7 @@ const Technicians = () => {
         word: "",
         assignedTickets: {
             min: 0,
-            max: 100
+            max: 50
         }
     });
 
@@ -36,7 +37,7 @@ const Technicians = () => {
             type: "range",
             options: [
                 { label: "min", value: 0 },
-                { label: "max", value: 100 }
+                { label: "max", value: 50 }
             ]
         }
     ];
@@ -90,7 +91,7 @@ const Technicians = () => {
         }
     };
 
-    const handleFilterChange = (name, value, value2) => {
+    const handleFilterChange = useCallback((name, value, value2) => {
         setFilters((prevFilters) => {
             if (name === "assignedTickets") {
                 return { ...prevFilters, [name]: { min: value, max: value2 } };
@@ -99,21 +100,14 @@ const Technicians = () => {
             }
         });
         setPage(1);
-    };
+    }, []);
 
-    function debounce(func, delay) {
-        let timeout;
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), delay);
-        };
-    }
-
-    const debouncedFilterChange = useCallback(
-        debounce((name, value, value2) => {
-            handleFilterChange(name, value, value2);
-        }, 300),
-        []
+    const debouncedFilterChange = useMemo(
+        () =>
+            debounce((name, value, value2) => {
+                handleFilterChange(name, value, value2);
+            }, 300),
+        [handleFilterChange]
     );
     
     return (
@@ -136,7 +130,7 @@ const Technicians = () => {
                             />
                         </Link>
                     ))}
-                    {error && <p class="error-box"><strong>{error}</strong></p>}
+                    {error && <p className="error-box"><strong>{error}</strong></p>}
                 </main>
             </div>
         </div>

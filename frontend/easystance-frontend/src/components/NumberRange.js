@@ -23,9 +23,10 @@ const NumberRange = ({ min, max, onChange }) => {
                         {children}
                     </div>
                 )}
-                renderThumb={({ props }) => (
-                    <div {...props} className="range-thumb" />
-                )}
+                renderThumb={({ props, index }) => {
+                    const { key, ...restProps } = props;
+                    return <div {...restProps} key={`thumb-${index}`} className="range-thumb" />;
+                }}
             />
             <div>
                 Min: {values[0]} - Max: {values[1]}

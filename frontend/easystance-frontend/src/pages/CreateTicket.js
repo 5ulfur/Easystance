@@ -68,7 +68,7 @@ const CreateTicket = () => {
                             <input
                                 type="text"
                                 name="subject"
-                                maxlength="255"
+                                maxLength="255"
                                 value={newTicket.subject}
                                 onChange={handleChange}
                                 required
@@ -78,7 +78,7 @@ const CreateTicket = () => {
                             {t(`description`)}:
                             <textarea
                                 name="description"
-                                maxlength="1000"
+                                maxLength="1000"
                                 value={newTicket.description}
                                 onChange={handleChange}
                                 required
@@ -116,7 +116,7 @@ const CreateTicket = () => {
                     </div>
                     <button type="submit">{t(`create_ticket`)}</button>
                 </form>
-                {error && <p class="error-box"><strong>{error}</strong></p>}
+                {error && <p className="error-box"><strong>{error}</strong></p>}
             </div>
         </div>
     );

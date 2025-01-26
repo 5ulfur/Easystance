@@ -3,6 +3,7 @@
     padding: 20px;
     margin: 20px;
     background-color: #ffffff;
+    overflow-y: auto;
 }
 
 .create-ticket-form-container {

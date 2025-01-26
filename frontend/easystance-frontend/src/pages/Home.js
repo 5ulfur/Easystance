@@ -147,7 +147,7 @@ const Home = () => {
                 />
               </Link>
             ))}
-            {error && <p class="error-box"><strong>{error}</strong></p>}
+            {error && <p className="error-box"><strong>{error}</strong></p>}
           </div>
         </main>
       </div>

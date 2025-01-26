@@ -4,7 +4,7 @@ import "../assets/styles/ErrorPage.css";
 
 const ErrorPage = ({ error }) => {
     return (
-        <div className="error-page">
+        <div className="page">
             <Navbar/>
             <h1 className="error-box error-page-message">{error}</h1>
         </div>

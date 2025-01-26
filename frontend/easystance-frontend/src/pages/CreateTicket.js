@@ -47,7 +47,7 @@ const CreateTicket = () => {
     };
 
     return (
-        <div className="create-ticket-page">
+        <div className="page">
             <Navbar/>
             <div className="create-ticket-container">
                 <h2>{t(`new_ticket`)}</h2>

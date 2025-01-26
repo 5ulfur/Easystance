@@ -124,7 +124,7 @@ const Home = () => {
   };
 
   return (
-    <div className="tickets-page">
+    <div className="page">
       <Navbar/>
       <div className="tickets-container">
         <Filters

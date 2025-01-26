@@ -29,11 +29,19 @@ const Tickets = sequelize.define("Tickets", {
     },
     customerId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: "Customers",
+            key: "id"
+        }
     },
     technicianId: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: true,
+        references: {
+            model: "Employees",
+            key: "id"
+        }
     }
 });
 

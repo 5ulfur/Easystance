@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import CreateTicket from "./pages/CreateTicket";
 import TicketDetails from "./pages/TicketDetails";
+import Technicians from "./pages/Technicians";
 import ErrorPage from "./pages/ErrorPage";
 import "./App.css";
 
@@ -53,6 +54,14 @@ function App() {
             element={
               <PrivateRoute roles={["administrator", "operator", "technician", "customer"]}>
                 <TicketDetails />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/technicians"
+            element={
+              <PrivateRoute roles={["administrator", "operator"]}>
+                <Technicians />
               </PrivateRoute>
             }
           />

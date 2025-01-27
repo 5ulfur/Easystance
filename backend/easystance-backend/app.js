@@ -5,6 +5,7 @@ const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");
 const ticketsRoutes = require("./routes/tickets");
 const usersRoutes = require("./routes/users");
+const warehouseRoutes = require("./routes/warehouse");
 
 const app = express();
 app.use(express.json());
@@ -31,6 +32,12 @@ Endpoints:
 /users/technicians/list
 */
 app.use("/users", usersRoutes);
+
+/*
+Endpoints:
+/warehouse/list
+*/
+app.use("/warehouse", warehouseRoutes);
 
 sequelize
     .authenticate()

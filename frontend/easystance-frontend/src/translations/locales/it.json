@@ -38,8 +38,10 @@
     "description": "Descrizione",
     "customer_email": "E-mail cliente",
     "assigned_tickets": "Ticket assegnati",
+    "quantity": "Quantità",
     "error_unauthorized": "Utente non autorizzato!",
     "error_page_not_found": "Errore 404 - Pagina non trovata!",
     "error_no_tickets": "Nessun ticket da mostrare!",
-    "error_no_technicians": "Nessun tecnico da mostrare!"
+    "error_no_technicians": "Nessun tecnico da mostrare!",
+    "error_no_warehouseitems": "Nessun componente in magazzino da mostrare!"
 }

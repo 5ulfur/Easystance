@@ -1,0 +1,24 @@
+.warehouseitem {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 3px 3px #000000;
+    transition: background-color 0.3s ease;
+}
+
+.warehouseitem:hover {
+    background-color: #cccccc;
+}
+
+.warehouseitem-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 1000px;
+}
+
+.warehouseitem-details {
+    margin: 5px 0;
+    color: #333333;
+}

@@ -15,6 +15,10 @@
     display: flex;
 }
 
+.settings-container button {
+    cursor: pointer;
+}
+
 
 /*popup*/
 
@@ -215,4 +219,8 @@
     margin-top: 25px;
     margin-bottom: 25px;
     color: red;
+}
+
+.change-password-left span {
+    cursor: pointer;
 }

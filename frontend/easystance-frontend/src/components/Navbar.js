@@ -13,7 +13,7 @@ const Navbar = () => {
     const agenda = { title: t(`navbar_values.agenda`), to: "/agenda" };
     const warehouse = { title: t(`navbar_values.warehouse`), to: "/warehouse" };
     const reports = { title: t(`navbar_values.reports`), to: "/reports" };
-    const settings = { title: t(`navbar_values.settings`), to: "/settings" };
+    const settings = { title: t(`navbar_values.settings`), to: `/settings` };
     
     const roleMenu = {
         administrator: [tickets, technicians, warehouse, reports, settings],

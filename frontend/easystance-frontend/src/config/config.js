@@ -6,10 +6,10 @@ const config = {
         checkAuth: "/auth/check",
         getTicket: "/tickets/ticket",
         getTicketsList: "/tickets/list",
-        getData: "/settings/data/user",
-        setEmail: "/settings/data/email",
-        setPassword: "/settings/data/password",
-        deleteProfile: "/settings/data/delete"
+        getData: "/settings/data",
+        setEmail: "/settings/email",
+        setPassword: "/settings/password",
+        deleteProfile: "/settings/delete"
     },
     language: "it"
 };

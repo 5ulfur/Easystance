@@ -3,19 +3,20 @@ import "../assets/styles/Settings.css";
 import config from "../config/config";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
+import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const Settings = () => {
     const[name, setName] = useState('');
     const[surname, setSurname] = useState('');
     const[email, setEmail] = useState('');
-    const[phoneNumber, setPhoneNumber] = useState('');
+    const[phone, setPhone] = useState('');
     const[oldPassword, setOldPassword] = useState('');
     const[newPassword, setNewPassword] = useState('');
     const[insertPassword, setInsertPassword] = useState('');
     const[password1, setPassword1] = useState('');
     const[password2, setPassword2] = useState('');
-    const{token, role} = useAuth();
+    const { token, role } = useAuth();
     const[showPopup, setShowPopup] = useState(false);
     const[gray, setGray] = useState(true);
     const { logout } = useAuth();
@@ -23,24 +24,30 @@ const Settings = () => {
     const[showDeleteProfile, setShowDeleteProfile] = useState(false);
 
     useEffect(() => {
+        console.log("ID from useParams:", id);
         const fetchData = async () => {
             try {
-            const response = await fetch(`${config.apiUrl}${config.endpoints.getData}`, {
-                headers: {"authorization": token}
-            });
-            const data = await response.json();
-            
-            setName(data.name);
-            setSurname(data.surname);
-            setEmail(data.email);
-            setPhoneNumber(data.phoneNumber);
-            setOldPassword(data.oldPassword);
+                const response = await fetch(`${config.apiUrl}${config.endpoints.getData}`, {
+                    headers: {"Authorization": token}
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    setName(data.name);
+                    setSurname(data.surname);
+                    setEmail(data.email);
+                    setPhone(data.phone);
+                    setOldPassword(data.oldPassword);
+                }
 
             } catch (error) {
-            console.error("Errore nel recupero dei dati:", error);
+                console.error("Errore nel recupero dei dati:", error);
             }
         };
-    });
+
+        fetchData();
+    }, [token, id]);
 
 
     {/*parte sinistra*/}
@@ -86,7 +93,7 @@ const Settings = () => {
             const response = await fetch(`${config.apiUrl}${config.endpoints.setEmail}`, {
                 method: "POST",
                 headers: {"authorization": token, "content-type": "application/json"},
-                body: JSON.stringify({email, phoneNumber})
+                body: JSON.stringify({email, phone})
             });
             if (!response.ok) {
                 throw new Error("Errore nella richiesta");
@@ -95,7 +102,7 @@ const Settings = () => {
         } catch (error) {
             throw error;
         }
-    }
+    };
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -121,7 +128,7 @@ const Settings = () => {
         } else {
             alert('La password che hai inserito non corrisponde a quella che avevi in precedenza')
         }
-    }
+    };
 
     const handleDeleteProfile = async (e) => {
         const handleClick = async () => {
@@ -140,11 +147,11 @@ const Settings = () => {
                 alert("Flag aggiornata con successo!");
             } catch(error) {
                 console.error('Errore:', error);
-                alert("Errore durante l\'invio della flag");
+                alert("Errore durante l'invio della flag");
             }
         }
-
-    }
+        handleClick();
+    };
     
     {/*visibilità password*/}
 
@@ -154,7 +161,7 @@ const Settings = () => {
 
     return (
         <div className="container-navbar">
-            <Navbar/>
+            <Navbar role= {role} id={id}/>
             <div className="settings-container">
                 <div className="left-side">
                     <aside className="left-menu">
@@ -198,8 +205,8 @@ const Settings = () => {
                             <input
                                 type="phoneNumber"
                                 placeholder="Numero di telefono"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                                 required/> <br/>
                             <button type="submit">Salva modifiche</button>
                         </form>

@@ -4,9 +4,9 @@ import { AuthProvider, useAuth } from "./services/AuthContext";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import TicketDetails from "./pages/TicketDetails";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import "./App.css";
-import Settings from "./pages/Settings";
 
 function PrivateRoute({ children }) {
   const { token, isLoading } = useAuth();

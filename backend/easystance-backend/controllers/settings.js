@@ -2,28 +2,15 @@ const Employees = require("../models/Employees");
 const Customers = require("../models/Customers");
 const db = require("../config/database");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 
 exports.getUserData = async (req, res) => {
-    /*const id = parseInt(req.query.id);
-
-    if (!req.query.id) {
-        return res.status(400).json({ error: "ID non fornito" });
-    }/*
-
-    const { id } = req.query;
-    console.log("ID ricevuto:", id); 
-    
-    const numericId = parseInt(id, 10);
-    console.log("ID numerico:", numericId);
-    
-    /*if (isNaN(numericId)) {
-        return res.status(400).json({ error: "ID non valido" });
-    }*/
+    const id = parseInt(req.user.id);
 
     try {
-        const data = await Customers.findOne({ where: { id:numericId } });
-
+        data = await Customers.findOne({ where: { id } });
+        
         if (data) {
             res.json({ data });
         } else {
@@ -32,21 +19,6 @@ exports.getUserData = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: "Errore del server!" });
     }
-
-    /*const userId = req.Customers.id; 
-    const user = await Customers.findByPk(userId);
-
-    if (user) {
-        res.json({
-            id: Customers.id,
-            name: Customers.name,
-            surname: Customers.surname,
-            email: Customers.email,
-            phone: Cust.phone
-        });
-    } else {
-        res.status(404).json({ error: "User not found" });
-    }*/
 };
 
 /*exports.setEmeil = async (req, res) => {

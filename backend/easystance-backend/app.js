@@ -25,6 +25,13 @@ Endpoints:
 */
 app.use("/tickets", ticketsRoutes);
 
+/*
+Endpoint:
+/settings/data
+/settings/email
+/settings/password
+/settings/delete
+*/
 app.use("/settings", settingsRoutes);
 
 app.use((err, req, res, next) => {

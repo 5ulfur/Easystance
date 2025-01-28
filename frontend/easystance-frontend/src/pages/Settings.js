@@ -3,7 +3,6 @@ import "../assets/styles/Settings.css";
 import config from "../config/config";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
-import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const Settings = () => {
@@ -24,21 +23,20 @@ const Settings = () => {
     const[showDeleteProfile, setShowDeleteProfile] = useState(false);
 
     useEffect(() => {
-        console.log("ID from useParams:", id);
         const fetchData = async () => {
             try {
                 const response = await fetch(`${config.apiUrl}${config.endpoints.getData}`, {
                     headers: {"Authorization": token}
-                });
+                }, []);
 
                 if (response.ok) {
                     const data = await response.json();
                     
-                    setName(data.name);
-                    setSurname(data.surname);
-                    setEmail(data.email);
-                    setPhone(data.phone);
-                    setOldPassword(data.oldPassword);
+                    setName(data.data.name);
+                    setSurname(data.data.surname);
+                    setEmail(data.data.email);
+                    setPhone(data.data.phone);
+                    setOldPassword(data.data.oldPassword);
                 }
 
             } catch (error) {
@@ -47,7 +45,7 @@ const Settings = () => {
         };
 
         fetchData();
-    }, [token, id]);
+    }, [token]);
 
 
     {/*parte sinistra*/}
@@ -161,7 +159,7 @@ const Settings = () => {
 
     return (
         <div className="container-navbar">
-            <Navbar role= {role} id={id}/>
+            <Navbar role= {role} />
             <div className="settings-container">
                 <div className="left-side">
                     <aside className="left-menu">

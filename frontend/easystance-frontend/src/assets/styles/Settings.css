@@ -212,11 +212,11 @@
 
 .edit-button {
     margin-left: 125px;
+    margin-bottom: 25px;
 }
 
 .delete-button {
     margin-left: 125px;
-    margin-top: 25px;
     margin-bottom: 25px;
     color: red;
 }

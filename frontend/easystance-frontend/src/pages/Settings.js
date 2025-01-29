@@ -10,8 +10,6 @@ const Settings = () => {
     const[surname, setSurname] = useState('');
     const[email, setEmail] = useState('');
     const[phone, setPhone] = useState('');
-    const[oldPassword, setOldPassword] = useState('');
-    const[newPassword, setNewPassword] = useState('');
     const[insertPassword, setInsertPassword] = useState('');
     const[password1, setPassword1] = useState('');
     const[password2, setPassword2] = useState('');
@@ -36,7 +34,6 @@ const Settings = () => {
                     setSurname(data.data.surname);
                     setEmail(data.data.email);
                     setPhone(data.data.phone);
-                    setOldPassword(data.data.oldPassword);
                 }
 
             } catch (error) {
@@ -90,13 +87,17 @@ const Settings = () => {
         try {
             const response = await fetch(`${config.apiUrl}${config.endpoints.setEmail}`, {
                 method: "POST",
-                headers: {"authorization": token, "content-type": "application/json"},
-                body: JSON.stringify({email, phone})
+                headers: {"Authorization": token, "content-type": "application/json"},
+                body: JSON.stringify({ email, phone })
             });
-            if (!response.ok) {
-                throw new Error("Errore nella richiesta");
-            }
+
             const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error);
+            } else {
+                alert("Modifiche effettuate con successo!");
+            }
+            
         } catch (error) {
             throw error;
         }
@@ -104,27 +105,25 @@ const Settings = () => {
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
-        if(insertPassword === oldPassword) {
-            if(password1 === password2 ) {
-                setNewPassword(oldPassword);
-                try {
-                    const response = await fetch(`${config.apiUrl}${config.endpoints.setPassword}`, {
-                        method: "POST",
-                        headers: {"Authorizzation": token, "content-type": "application/json"},
-                        body: JSON.stringify({ newPassword })
-                    });
-                    if(!response.ok){
-                        throw new Error("Errore nella richiesta");
-                    }
-                    const data = await response.json();
-                } catch (error) {
-                    throw error;
+        if(password1 === password2 ) {
+            try {
+                const response = await fetch(`${config.apiUrl}${config.endpoints.setPassword}`, {
+                    method: "POST",
+                    headers: {"Authorization": token, "content-type": "application/json"},
+                    body: JSON.stringify({ insertPassword, password2 })
+                });
+
+                const data = await response.json();
+                if(!response.ok){
+                    throw new Error(data.error);
+                } else {
+                    alert("password modificata con successo!");
                 }
-            } else {
-                alert('le password che hai inserito non sono uguali!')
+            } catch (error) {
+                throw error;
             }
         } else {
-            alert('La password che hai inserito non corrisponde a quella che avevi in precedenza')
+            alert('le password che hai inserito non sono uguali!');
         }
     };
 
@@ -237,7 +236,7 @@ const Settings = () => {
                             </div>
                             <button className="edit-button" type="submit">Modifica password</button>
                         </form>
-                        {(t(`roles_values.${role}`)) === 'Cliente' && (
+                        {(t(`roles_values.${role}`)) === "Cliente" && (
                             <button className="delete-button" onClick={handleShowDeleteProfile}>Elimina profilo</button>
                         )}
                     </div>

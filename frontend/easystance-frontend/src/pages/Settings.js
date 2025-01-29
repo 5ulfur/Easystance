@@ -140,8 +140,8 @@ const Settings = () => {
                 if (!response.ok) {
                     throw new Error(result.error);
                 } else {
-                    alert(result.message);
                     handleLogout();
+                    alert(result.message);
                 }
 
             } catch(error) {

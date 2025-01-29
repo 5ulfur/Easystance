@@ -123,7 +123,7 @@ exports.deleteProfile = async (req, res) => {
             { where: { id } }
         );
 
-        res.status(200).json({ message: "Flag aggiornata con successo" });
+        res.status(200).json({ message: "Profilo eliminato!" });
 
     } catch (error) {
         return res.status(500).json({ error: "Errore del server!" });

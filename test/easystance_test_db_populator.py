@@ -6,8 +6,8 @@ import random
 from datetime import datetime, timedelta
 
 DB_HOST = 'localhost'
-DB_USER = 'easystance_user'
-DB_PASSWORD = 'easystance_password'
+DB_USER = 'root'
+DB_PASSWORD = 'Vito_0302!'
 DB_NAME = 'easystance_db'
 
 def gen_random_date(last_days=30):
@@ -215,10 +215,10 @@ def main():
     if connection:
         populate_customers(connection, n_customers=100)
         populate_employees(connection, n_employees=25)
-        populate_tickets(connection, n_tickets=150)
+        populate_tickets(connection, n_tickets=50)
         populate_components(connection, n_components=50)
-        populate_comments(connection, n_comments=1000)
-        populate_actions(connection, n_actions=2000)
+        populate_comments(connection, n_comments=500)
+        populate_actions(connection, n_actions=750)
         connection.close()
 
 if __name__ == "__main__":

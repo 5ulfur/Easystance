@@ -16,7 +16,12 @@ exports.getUserData = async (req, res) => {
         }
         
         if (data) {
-            res.json({ data });
+            res.json( {
+                name: data.name,
+                surname: data.surname,
+                email: data.email,
+                phone: data.phone
+            });
         } else {
             return res.status(404).json({ error: "Utente non trovato" });
         }
@@ -79,8 +84,6 @@ exports.setPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: "Dipendente non trovato" });
         }
-
-        console.log("password inserita:", insertPassword);
 
         const isPasswordCorrect = await bcrypt.compare(insertPassword, user.password);
         if (!isPasswordCorrect) {

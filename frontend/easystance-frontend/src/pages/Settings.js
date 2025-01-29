@@ -25,15 +25,15 @@ const Settings = () => {
             try {
                 const response = await fetch(`${config.apiUrl}${config.endpoints.getData}`, {
                     headers: {"Authorization": token}
-                }, []);
+                });
 
                 if (response.ok) {
                     const data = await response.json();
                     
-                    setName(data.data.name);
-                    setSurname(data.data.surname);
-                    setEmail(data.data.email);
-                    setPhone(data.data.phone);
+                    setName(data.name);
+                    setSurname(data.surname);
+                    setEmail(data.email);
+                    setPhone(data.phone);
                 }
 
             } catch (error) {

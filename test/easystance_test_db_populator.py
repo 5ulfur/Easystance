@@ -6,8 +6,8 @@ import random
 from datetime import datetime, timedelta
 
 DB_HOST = 'localhost'
-DB_USER = 'root'
-DB_PASSWORD = 'Vito_0302!'
+DB_USER = 'easystance_user'
+DB_PASSWORD = 'easystance_password'
 DB_NAME = 'easystance_db'
 
 def gen_random_date(last_days=30):

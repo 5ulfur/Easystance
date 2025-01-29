@@ -4,7 +4,7 @@ const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");
 const ticketsRoutes = require("./routes/tickets");
-const settingsRoutes = require("./routes/settings")
+const settingsRoutes = require("./routes/settings");
 const usersRoutes = require("./routes/users");
 const warehouseRoutes = require("./routes/warehouse");
 

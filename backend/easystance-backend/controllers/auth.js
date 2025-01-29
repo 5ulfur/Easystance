@@ -40,6 +40,10 @@ exports.login = async (req, res) => {
             }
         }
 
+        if (role === "customer" && user.flag === true) {
+            return res.status(404).json({ error: "Email o password non validi!" });
+        }
+
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
             return res.status(401).json({ error: "Email o password non validi!" });

@@ -14,6 +14,6 @@ router.post("/email", verifyToken, setEmail);
 router.post("/password", verifyToken, setPassword);
 
 // Endpoint: /settings/delete
-//router.post("/delete", verifyToken, deleteProfile);
+router.post("/delete", verifyToken, deleteProfile);
 
 module.exports = router;

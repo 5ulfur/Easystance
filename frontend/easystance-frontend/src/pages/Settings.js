@@ -120,7 +120,7 @@ const Settings = () => {
                     alert("password modificata con successo!");
                 }
             } catch (error) {
-                throw error;
+                alert(error.message);
             }
         } else {
             alert('le password che hai inserito non sono uguali!');
@@ -136,15 +136,17 @@ const Settings = () => {
                     body: JSON.stringify({flag:true}),
                 });
 
+                const result = await response.json();
                 if (!response.ok) {
-                    throw new Error("Errore durante l'aggiornamento");
+                    throw new Error(result.error);
+                } else {
+                    alert(result.message);
+                    handleLogout();
                 }
 
-                const result = await response.json();
-                alert("Flag aggiornata con successo!");
             } catch(error) {
                 console.error('Errore:', error);
-                alert("Errore durante l'invio della flag");
+                alert("Errore durante l'eliminazione del profilo");
             }
         }
         handleClick();

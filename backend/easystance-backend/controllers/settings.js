@@ -80,17 +80,17 @@ exports.setPassword = async (req, res) => {
             return res.status(404).json({ error: "Dipendente non trovato" });
         }
 
-        const hashedPassword = await bcrypt.hash(insertPassword, /*inserire numero di sali*/ );
-        console.log("password inserita:", hashedPassword);
-        console.log("password vecchia:", user.password);
+        console.log("password inserita:", insertPassword);
 
-        const isPasswordCorrect = await bcrypt.compare(hashedPassword, user.password);
+        const isPasswordCorrect = await bcrypt.compare(insertPassword, user.password);
         if (!isPasswordCorrect) {
-            return res.status(401).json({ error: "Email o password non validi!" });
+            return res.status(401).json({ error: "La password che hai inserito non corrisponde alla password che avevi in precedenza!" });
         } else {
-            await data.update (
+            let encryptedPassword = await bcrypt.hash(password2, 10);
+
+            await user.update (
                 {
-                    password: password2,
+                    password: encryptedPassword,
                     updateAt: new Date ()
                 },
                 { where: { id } }
@@ -104,10 +104,28 @@ exports.setPassword = async (req, res) => {
     }
 };
 
-/*exports.deleteProfile = async (req, res) => {
+exports.deleteProfile = async (req, res) => {
+    const {flag} = req.body;
+    const id = req.user.id;
+    
     try {
+        let user = await Customers.findByPk( id );
+
+        if (!user) {
+            return res.status(404).json({ error: "Cliente non trovato" });
+        }
+
+        await user.update (
+            {
+                flag: flag,
+                updateAt: new Date ()
+            },
+            { where: { id } }
+        );
+
+        res.status(200).json({ message: "Flag aggiornata con successo" });
 
     } catch (error) {
         return res.status(500).json({ error: "Errore del server!" });
     }
-};*/
+};

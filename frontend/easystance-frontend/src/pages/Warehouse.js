@@ -1,6 +1,7 @@
-import React,  { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import React,  { useState, useRef, useCallback, useMemo } from "react";
 import { debounce } from "lodash";
 import { useAuth } from "../services/AuthContext";
+import useLazyLoading from "../services/LazyLoading";
 import { t } from "../translations/translations";
 import Navbar from "../components/Navbar";
 import Filters from "../components/Filters";
@@ -10,10 +11,7 @@ import "../assets/styles/Warehouse.css";
 
 const Warehouse = () => {
     const { token } = useAuth();
-    const [warehouseitems, setWarehouseitems] = useState([]);
-    const [hasMore, setHasMore] = useState(false);
     const [error, setError] = useState(null);
-    const [page, setPage] = useState(1);
     const listRef = useRef(null);
     const limit = 20;
     const [filters, setFilters] = useState({
@@ -41,52 +39,35 @@ const Warehouse = () => {
         }
     ];
 
-    useEffect(() => {
-        const getWarehouseItems = async () => {
-            try {
-                const response = await fetch(`${config.apiUrl}${config.endpoints.getComponentsList}`, {
-                    method: "POST",
-                    headers: { "Authorization": token , "Content-Type": "application/json" },
-                    body: JSON.stringify({ page, limit, filters })
-                });
-    
-                const data = await response.json();
-                if (response.ok) {
-                    if (data.components.length === 0) {
-                        setError(t(`error_no_warehouseitems`));
-                    } else {
-                        setError(null);
-                    }
+    const getWarehouseItems = useCallback(async (page, limit) => {
+        const response = await fetch(`${config.apiUrl}${config.endpoints.getComponentsList}`, {
+            method: "POST",
+            headers: { "Authorization": token , "Content-Type": "application/json" },
+            body: JSON.stringify({ page, limit, filters })
+        });
 
-                    if (page === 1) {
-                        setWarehouseitems(data.components);
-                    } else {
-                        setWarehouseitems((prevWarehouseitems) => {
-                            const uniqueWarehouseitems = [...prevWarehouseitems, ...data.components].reduce((acc, warehouseitem) => {
-                                if (!acc.some((currWarehouseitem) => currWarehouseitem.id === warehouseitem.id)) acc.push(warehouseitem);
-                                return acc;
-                            }, []);
-                            return uniqueWarehouseitems;
-                        });
-                    }
-
-                    setHasMore(data.hasMore);
-                } else {
-                    setError(data.error);
-                }
-            } catch (error) {
-                setError(error.message);
+        const data = await response.json();
+        if (response.ok) {
+            if (data.components.length === 0) {
+                setError(t(`error_no_warehouseitems`));
+            } else {
+                setError(null);
             }
-        }
 
-        getWarehouseItems();
-    }, [token, page, filters]);
+            return { data: data.components, hasMore: data.hasMore };
+        } else {
+            setError(data.error);
+            return { data: [], hasMore: false };
+        }
+    }, [token, filters]);
+
+    const { items: warehouseitems, hasMore, loadMore, reload } = useLazyLoading(getWarehouseItems, limit);
 
     const handleScroll = async () => {
         const { scrollTop, scrollHeight, clientHeight } = listRef.current;
     
         if (clientHeight + scrollTop + 1 >= scrollHeight && hasMore) {
-            setPage((prevPage) => prevPage + 1);
+            loadMore();
         }
     };
 
@@ -98,8 +79,8 @@ const Warehouse = () => {
                 return { ...prevFilters, [name]: value };
             }
         });
-        setPage(1);
-    }, []);
+        reload();
+    }, [reload]);
 
     const debouncedFilterChange = useMemo(
         () =>
@@ -121,6 +102,7 @@ const Warehouse = () => {
                 <main className="warehouse-list" ref={listRef} onScroll={handleScroll}>
                     {warehouseitems.map((warehouseitem) => (
                         <WarehouseItem
+                            key={warehouseitem.id}
                             name={warehouseitem.name}
                             quantity={warehouseitem.quantity}
                         />

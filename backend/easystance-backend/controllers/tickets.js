@@ -1,14 +1,40 @@
 const { Op } = require("sequelize");
 const Tickets = require("../models/Tickets");
 const Customers = require("../models/Customers");
+const Employees = require("../models/Employees");
+const Comments = require("../models/Comments");
+const Actions = require("../models/Actions");
+
+Comments.belongsTo(Employees, { foreignKey: "employeeId", as: "employee" });
+
+Employees.hasMany(Comments, { foreignKey: "employeeId", as: "comments" });
+
+Actions.belongsTo(Employees, { foreignKey: "employeeId", as: "employee" });
+
+Employees.hasMany(Actions, { foreignKey: "employeeId", as: "actions" });
 
 exports.getTicket = async (req, res) => {
   const id = parseInt(req.query.id);
 
   try {
-    const ticket = await Tickets.findOne({ where: { id } });
-    if (ticket) {
+    let include = [];
+    
+    if (req.user.role === "operator" || req.user.role === "administrator" || req.user.role === "technician") {
+      include = [
+        {
+          model: Employees,
+          as: "technician",
+          attributes: ["name", "surname", "email"]
+        }
+      ]
+    }
 
+    const ticket = await Tickets.findOne({
+      where: { id },
+      include
+    });
+
+    if (ticket) {
       if (req.user.role === "customer" && req.user.id !== ticket.customerId) {
         return res.status(401).json({ error: "Autorizzazione negata!" });
       }
@@ -97,6 +123,187 @@ exports.createTicket = async (req, res) => {
     });
 
     res.json({ ticketId: newTicket.id });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Errore del server!" });
+  }
+};
+
+exports.editTicket = async (req, res) => {
+  const id = parseInt(req.query.id);
+  const edits = req.body;
+
+  try {
+    if (req.user.role !== "operator" && req.user.role !== "administrator") {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const ticket = await Tickets.findByPk(id);
+
+    let newActionDescription = ""
+
+    if (ticket) {
+      Object.keys(edits).forEach((key) => {
+        if (edits[key] !== undefined) {
+          ticket[key] = edits[key];
+
+          newActionDescription = [key] + " changed to " + edits[key];
+        }
+      });
+
+      ticket["updatedAt"] = new Date();
+
+      await ticket.save();
+
+      const newAction = await Actions.create({
+        employeeId: req.user.id,
+        ticketId: id,
+        category: "edit",
+        description: newActionDescription,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      res.json({ message: "Ticket aggiornato!" });
+    } else {
+      return res.status(404).json({ error: "Nessun ticket con questo id!" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Errore del server!" });
+  }
+};
+
+exports.getTicketComments = async (req, res) => {
+  const { id, page, limit } = req.body;
+  const offset = (page - 1) * limit;
+
+  try {
+    const ticket = await Tickets.findOne({ where: { id } });
+
+    if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    if (req.user.role === "technician" && req.user.id !== ticket.technicianId) {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const { rows: comments, count } = await Comments.findAndCountAll({
+      where: { ticketId: id },
+      include: [
+        {
+          model: Employees,
+          as: "employee",
+          attributes: ["name", "surname", "email"]
+        }
+      ],
+      limit: limit,
+      offset: offset,
+      order: [["createdAt", "DESC"]]
+    });
+
+    res.json({
+      comments,
+      hasMore: offset + comments.length < count
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Errore del server!" });
+  }
+}
+
+exports.createTicketComment = async (req, res) => {
+  const { id, comment } = req.body;
+
+  try {
+    if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const ticket = await Tickets.findOne({ where: { id } });
+
+    if (req.user.role === "technician" && req.user.id !== ticket.technicianId) {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const newComment = await Comments.create({
+      employeeId: req.user.id,
+      ticketId: id,
+      description: comment,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    res.json({ id: newComment.id });
+  } catch (error) {
+    return res.status(500).json({ error: "Errore del server!" });
+  }
+};
+
+exports.getTicketActions = async (req, res) => {
+  const { id, page, limit } = req.body;
+  const offset = (page - 1) * limit;
+
+  try {
+    const ticket = await Tickets.findOne({ where: { id } });
+
+    if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    if (req.user.role === "technician" && req.user.id !== ticket.technicianId) {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const { rows: actions, count } = await Actions.findAndCountAll({
+      where: { ticketId: id },
+      include: [
+        {
+          model: Employees,
+          as: "employee",
+          attributes: ["name", "surname", "email"]
+        }
+      ],
+      limit: limit,
+      offset: offset,
+      order: [["createdAt", "DESC"]]
+    });
+
+    res.json({
+      actions,
+      hasMore: offset + actions.length < count
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Errore del server!" });
+  }
+}
+
+exports.createTicketAction = async (req, res) => {
+  const { id, action } = req.body;
+
+  try {
+    if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const ticket = await Tickets.findOne({ where: { id } });
+
+    if (req.user.role === "technician" && req.user.id !== ticket.technicianId) {
+      return res.status(401).json({ error: "Autorizzazione negata!" });
+    }
+
+    const newAction = await Actions.create({
+      employeeId: req.user.id,
+      ticketId: id,
+      category: action.category,
+      description: action.description,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    res.json({ id: newAction.id });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Errore del server!" });

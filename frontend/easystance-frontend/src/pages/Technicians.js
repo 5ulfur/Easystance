@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import { debounce } from "lodash";
 import { Link } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
+import useLazyLoading from "../services/LazyLoading";
 import { t } from "../translations/translations";
 import Navbar from "../components/Navbar";
 import Filters from "../components/Filters";
@@ -11,10 +12,7 @@ import "../assets/styles/Technicians.css";
 
 const Technicians = () => {
     const { token } = useAuth();
-    const [technicians, setTechnicians] = useState([]);
-    const [hasMore, setHasMore] = useState(false);
     const [error, setError] = useState(null);
-    const [page, setPage] = useState(1);
     const listRef = useRef(null);
     const limit = 20;
     const [filters, setFilters] = useState({
@@ -42,52 +40,35 @@ const Technicians = () => {
         }
     ];
 
-    useEffect(() => {
-        const getTechnicians = async () => {
-            try {
-                const response = await fetch(`${config.apiUrl}${config.endpoints.getTechniciansList}`, {
-                    method: "POST",
-                    headers: { "Authorization": token , "Content-Type": "application/json" },
-                    body: JSON.stringify({ page, limit, filters })
-                });
-    
-                const data = await response.json();
-                if (response.ok) {
-                    if (data.technicians.length === 0) {
-                        setError(t(`error_no_technicians`));
-                    } else {
-                        setError(null);
-                    }
-
-                    if (page === 1) {
-                        setTechnicians(data.technicians);
-                    } else {
-                        setTechnicians((prevTechnicians) => {
-                            const uniqueTechnicians = [...prevTechnicians, ...data.technicians].reduce((acc, technician) => {
-                                if (!acc.some((currTechnician) => currTechnician.id === technician.id)) acc.push(technician);
-                                return acc;
-                            }, []);
-                            return uniqueTechnicians;
-                        });
-                    }
-
-                    setHasMore(data.hasMore);
-                } else {
-                    setError(data.error);
-                }
-            } catch (error) {
-                setError(error.message);
+    const getTechnicians = useCallback(async (page, limit) => {
+        const response = await fetch(`${config.apiUrl}${config.endpoints.getTechniciansList}`, {
+            method: "POST",
+            headers: { "Authorization": token , "Content-Type": "application/json" },
+            body: JSON.stringify({ page, limit, filters })
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+            if (data.technicians.length === 0) {
+                setError(t(`error_no_technicians`));
+            } else {
+                setError(null);
             }
-        }
 
-        getTechnicians();
-    }, [token, page, filters]);
+            return { data: data.technicians, hasMore: data.hasMore };
+        } else {
+            setError(data.error);
+            return { data: [], hasMore: false };
+        }
+    }, [token, filters]);
+
+    const { items: technicians, hasMore, loadMore, reload } = useLazyLoading(getTechnicians, limit);
 
     const handleScroll = async () => {
         const { scrollTop, scrollHeight, clientHeight } = listRef.current;
     
         if (clientHeight + scrollTop + 1 >= scrollHeight && hasMore) {
-            setPage((prevPage) => prevPage + 1);
+            loadMore();
         }
     };
 
@@ -99,8 +80,8 @@ const Technicians = () => {
                 return { ...prevFilters, [name]: value };
             }
         });
-        setPage(1);
-    }, []);
+        reload();
+    }, [reload]);
 
     const debouncedFilterChange = useMemo(
         () =>

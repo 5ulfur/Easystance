@@ -1,0 +1,17 @@
+.comment {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.comment-header {
+    display: flex;
+}
+
+.comment-header span {
+    margin-left: 10px;
+    color: #888888;
+}

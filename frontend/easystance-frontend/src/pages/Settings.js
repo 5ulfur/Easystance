@@ -45,14 +45,14 @@ const Settings = () => {
     }, [token]);
 
 
-    {/*parte sinistra*/}
+    //parte sinistra
 
     const handleProfile = async () => {
         setShowPopup(false);
     };
 
 
-    {/*popup*/}
+    //popup
 
     const handleShowPopup = async () => {
 
@@ -80,7 +80,7 @@ const Settings = () => {
     };
 
 
-    {/*parte destra*/}
+    //parte destra
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -152,7 +152,7 @@ const Settings = () => {
         handleClick();
     };
     
-    {/*visibilità password*/}
+    //visibilità password
 
     const toggleViewPassword = () => {
         setViewPassword(!viewPassword);
@@ -220,7 +220,7 @@ const Settings = () => {
                                     onChange={(e) => setInsertPassword(e.target.value)}
                                     required/>
                                 <span
-                                    onClick={toggleViewPassword}>{viewPassword ? 'X' : '👁'}</span>
+                                    onClick={toggleViewPassword}>{viewPassword ? 'X' : '👁'}</span> {/*bottone per vedere la password inserita*/}
                             </div>
                             <div className="change-password-right">
                                 <h3>Nuova password</h3>

@@ -60,14 +60,6 @@ function App() {
             }
           />
           <Route
-            path="/settings"
-            element= {
-              <PrivateRoute roles={["administrator", "operator", "technician", "customer"]}>
-                <Settings />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/technicians"
             element={
               <PrivateRoute roles={["administrator", "operator"]}>
@@ -80,6 +72,14 @@ function App() {
             element={
               <PrivateRoute roles={["administrator", "operator", "technician"]}>
                 <Warehouse />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element= {
+              <PrivateRoute roles={["administrator", "operator", "technician", "customer"]}>
+                <Settings />
               </PrivateRoute>
             }
           />

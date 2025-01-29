@@ -11,7 +11,7 @@ router.get("/ticket", verifyToken, getTicket);
 router.post("/list", verifyToken, listTickets);
 
 //Endpoint: /tickets/create
-router.post("/create", verifyToken, createTicket)
+router.post("/create", verifyToken, createTicket);
 
 //Endpoint: /tickets/edit
 router.patch("/edit", verifyToken, editTicket);

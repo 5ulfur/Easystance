@@ -4,6 +4,7 @@ const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");
 const ticketsRoutes = require("./routes/tickets");
+const settingsRoutes = require("./routes/settings");
 const usersRoutes = require("./routes/users");
 const warehouseRoutes = require("./routes/warehouse");
 
@@ -31,6 +32,15 @@ Endpoints:
 /tickets/actions/create
 */
 app.use("/tickets", ticketsRoutes);
+
+/*
+Endpoint:
+/settings/data
+/settings/email
+/settings/password
+/settings/delete
+*/
+app.use("/settings", settingsRoutes);
 
 /*
 Endpoints:

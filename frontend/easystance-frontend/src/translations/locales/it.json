@@ -36,6 +36,12 @@
     "create_ticket": "Crea ticket",
     "subject": "Oggetto",
     "description": "Descrizione",
+    "roles_values": {
+        "customer": "Cliente",
+        "administrator": "Amministratore",
+        "operator": "Operatore",
+        "technician": "Tecnico"
+    },
     "customer_email": "E-mail cliente",
     "assigned_tickets": "Ticket assegnati",
     "assigned_to": "Assegnato a",

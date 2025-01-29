@@ -215,10 +215,10 @@ def main():
     if connection:
         populate_customers(connection, n_customers=100)
         populate_employees(connection, n_employees=25)
-        populate_tickets(connection, n_tickets=150)
+        populate_tickets(connection, n_tickets=50)
         populate_components(connection, n_components=50)
-        populate_comments(connection, n_comments=1000)
-        populate_actions(connection, n_actions=2000)
+        populate_comments(connection, n_comments=500)
+        populate_actions(connection, n_actions=750)
         connection.close()
 
 if __name__ == "__main__":

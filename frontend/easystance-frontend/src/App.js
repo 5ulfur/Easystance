@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import CreateTicket from "./pages/CreateTicket";
 import TicketDetails from "./pages/TicketDetails";
+import Settings from "./pages/Settings";
 import Technicians from "./pages/Technicians";
 import Warehouse from "./pages/Warehouse";
 import ErrorPage from "./pages/ErrorPage";
@@ -71,6 +72,14 @@ function App() {
             element={
               <PrivateRoute roles={["administrator", "operator", "technician"]}>
                 <Warehouse />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element= {
+              <PrivateRoute roles={["administrator", "operator", "technician", "customer"]}>
+                <Settings />
               </PrivateRoute>
             }
           />

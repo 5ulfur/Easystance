@@ -1,0 +1,226 @@
+/*container navbar*/
+.container-navbar {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+
+}
+
+/*container principale*/
+.settings-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+.settings-container button {
+    cursor: pointer;
+}
+
+
+/*popup*/
+
+.show-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, .8);
+    text-align: center;
+    justify-content: center;
+    display: grid;
+}
+
+.popup {
+    background-color: gray;
+    width: 350px;
+    height: 180px;
+    border-radius: 20px;
+    text-align: center;
+    margin-top: 40vh;
+    color: white;
+}
+
+.popup h1 {
+    margin:15px;
+}
+
+.popup button {
+    font-size: 24px;
+    margin-top: 40px;
+    margin-inline: 50px;
+    width: 40px;
+    height: auto;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+ 
+/*popup elimina profilo*/
+.popup-delete-profile h1 {
+    color:red;
+}
+
+
+/*parte sinistra della pagina*/ 
+
+.left-side {
+    width: 25%;
+    height: 100%;
+    border: 1px solid black;
+    background-color: white;
+}
+
+.left-menu button{
+    width: 100%;
+    height: auto;
+    font-size: 28px;
+    padding: 15px;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid black;
+}
+
+.left-menu-gray {
+    background-color: #85b0b8;
+    transition: background-color 0.3s ease;
+}
+
+.left-menu-white {
+    background-color: white;
+    transition: background-color 0.3s ease;
+}
+
+
+/*parte destra della pagina*/
+
+.right-side {
+    width: 75%;
+    height: 100%;
+}
+.right-side h1 {
+    font-weight: bold;
+    font-size: 28;
+}
+
+.right-side h2 {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.right-side h3 {
+    font-weight: 300;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.right-side button {
+    width: 240px;
+    height: 40px;
+    border-radius: 50px;
+    border: none;
+    background-color: rgba(0, 0, 0, .18);
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.right-side button:hover {
+    background-color: rgba(0, 0, 0, .32);
+    transition: background-color 0.3s ease;
+}
+
+
+/*informazioni generali*/
+
+.general-information {
+    display: grid;
+    width: 45%;
+    height: auto;
+    grid-template-columns: 1fr 1fr;
+    margin-left: 15%;
+    margin-top: 40px;
+}
+
+.general-information h2 {
+    color: #404040;
+}
+
+.left-information,
+.right-information {
+    margin-top: 20px;
+}
+
+
+/*Puoi modificare*/
+
+.can-modify {
+    width: 85%;
+    height: auto;
+    margin-left: 15%;
+    margin-top: 60px;
+}
+
+.can-modify form {
+    margin-top: 20px;
+}
+
+.can-modify input {
+    font-size: 16px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    height: 42px;
+    width: 400px;
+    padding: 5px;
+}
+
+.can-modify button {
+    margin-top: 20px;
+    margin-left: 100px;
+}
+
+
+/*Cambio password*/
+
+.change-password {
+    width: 85%;
+    height: auto;
+    margin-left: 15%;
+    margin-top: 60px;
+}
+
+.change-password form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.change-password input {
+    font-size: 16px;
+    margin-bottom: 25px;
+    margin-right: -35px;
+    border-radius: 10px;
+    height: 42px;
+    width: 400px;
+    padding: 5px;
+}
+
+.edit-button {
+    margin-left: 125px;
+    margin-bottom: 25px;
+}
+
+.delete-button {
+    margin-left: 125px;
+    margin-bottom: 25px;
+    color: red;
+}
+
+.change-password-left span {
+    cursor: pointer;
+}

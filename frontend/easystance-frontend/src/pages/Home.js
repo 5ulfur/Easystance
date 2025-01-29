@@ -1,6 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { debounce } from "lodash";
 import { useAuth } from "../services/AuthContext";
+import useLazyLoading from "../services/LazyLoading";
 import { t } from "../translations/translations";
 import Navbar from "../components/Navbar";
 import Filters from "../components/Filters";
@@ -10,10 +12,7 @@ import "../assets/styles/Home.css";
 
 const Home = () => {
   const { token, role } = useAuth();
-  const [tickets, setTickets] = useState([]);
-  const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
   const limit = 10;
   const listRef = useRef(null);
   const [filters, setFilters] = useState({
@@ -62,56 +61,39 @@ const Home = () => {
     }
   ];
 
-  useEffect(() => {
-    const getTickets = async () => {
-      try {
-        const response = await fetch(`${config.apiUrl}${config.endpoints.getTicketsList}`, {
-          method: "POST",
-          headers: { "Authorization": token , "Content-Type": "application/json" },
-          body: JSON.stringify({ page, limit, filters })
-        });
+  const getTickets = useCallback(async (page, limit) => {
+    const response = await fetch(`${config.apiUrl}${config.endpoints.getTicketsList}`, {
+      method: "POST",
+      headers: { "Authorization": token , "Content-Type": "application/json" },
+      body: JSON.stringify({ page, limit, filters })
+    });
 
-        const data = await response.json();
-        if (response.ok) {
-          if (data.tickets.length === 0) {
-            setError(t(`error_no_tickets`));
-          } else {
-            setError(null);
-          }
-
-          if (page === 1) {
-            setTickets(data.tickets);
-          } else {
-            setTickets((prevTickets) => {
-              const uniqueTickets = [...prevTickets, ...data.tickets].reduce((acc, ticket) => {
-                if (!acc.some((currTicket) => currTicket.id === ticket.id)) acc.push(ticket);
-                return acc;
-              }, []);
-              return uniqueTickets;
-            });
-          }
-
-          setHasMore(data.hasMore);
-        } else {
-          setError(data.error);
-        }
-      } catch (error) {
-        setError(error.message);
+    const data = await response.json();
+    if (response.ok) {
+      if (data.tickets.length === 0) {
+        setError(t(`error_no_tickets`));
+      } else {
+        setError(null);
       }
-    };
 
-    getTickets();
-  }, [token, page, filters]);
+      return { data: data.tickets, hasMore: data.hasMore };
+    } else {
+      setError(data.error);
+      return { data: [], hasMore: false };
+    }
+  }, [token, filters]);
+
+  const { items: tickets, hasMore, loadMore, reload } = useLazyLoading(getTickets, limit);
 
   const handleScroll = async () => {
     const { scrollTop, scrollHeight, clientHeight } = listRef.current;
 
     if (clientHeight + scrollTop + 1 >= scrollHeight && hasMore) {
-      setPage((prevPage) => prevPage + 1);
+      loadMore();
     }
   };
 
-  const handleFilterChange = (name, value, isChecked) => {
+  const handleFilterChange = useCallback((name, value, isChecked) => {
     setFilters((prevFilters) => {
       if (name === "category" || name === "priority" || name === "status") {
         const updatedValues = isChecked ? [...prevFilters[name], value] : prevFilters[name].filter((item) => item !== value);
@@ -120,8 +102,16 @@ const Home = () => {
         return { ...prevFilters, [name]: value };
       }
     });
-    setPage(1);
-  };
+    reload();
+  }, [reload]);
+
+  const debouncedFilterChange = useMemo(
+    () =>
+        debounce((name, value, isChecked) => {
+          handleFilterChange(name, value, isChecked);
+      }, 300),
+    [handleFilterChange]
+  );
 
   return (
     <div className="page">
@@ -130,7 +120,7 @@ const Home = () => {
         <Filters
           title={t(`filters`)}
           filterOptions={filterOptions}
-          onFilterChange={handleFilterChange}
+          onFilterChange={debouncedFilterChange}
         />
         <main className="tickets-list-container">
           <div className="new-ticket-button-container">

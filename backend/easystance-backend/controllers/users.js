@@ -49,6 +49,7 @@ exports.listTechnicians = async (req, res) => {
                 ]
             },
             order: [["name", "ASC"], ["surname", "ASC"]],
+            //order: [["assignedTicketsCount", "ASC"]],
             limit,
             offset,
             raw: true

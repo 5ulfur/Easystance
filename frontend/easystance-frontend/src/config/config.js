@@ -7,6 +7,11 @@ const config = {
         getTicket: "/tickets/ticket",
         getTicketsList: "/tickets/list",
         createTicket: "/tickets/create",
+        editTicket: "/tickets/edit",
+        getComments: "/tickets/comments/list",
+        createComment: "/tickets/comments/create",
+        getActions: "/tickets/actions/list",
+        createAction: "/tickets/actions/create",
         getTechniciansList: "/users/technicians/list",
         getComponentsList: "/warehouse/list"
     },

@@ -24,6 +24,11 @@ Endpoints:
 /tickets/ticket
 /tickets/list
 /tickets/create
+/tickets/edit
+/tickets/comments/list
+/tickets/comments/create
+/tickets/actions/list
+/tickets/actions/create
 */
 app.use("/tickets", ticketsRoutes);
 

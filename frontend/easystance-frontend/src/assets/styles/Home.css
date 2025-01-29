@@ -27,9 +27,10 @@
 
 .new-ticket-button-container {
   margin: 0 20px;
+  /* text-align: right; */
 }
 
-.tickets-list-container button {
+.new-ticket-button-container button {
   width: 20%;
   padding: 10px;
   background-color: #007bff;
@@ -42,6 +43,6 @@
   transition: background-color 0.3s ease;
 }
 
-.tickets-list-container button:hover {
+.new-ticket-button-container button:hover {
   background-color: #0056b3;
 }

@@ -16,12 +16,12 @@ const CreateTicket = () => {
         priority: "low",
         status: "open"
     });
-    const [error, setError] = useState("");
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
+        setError(null);
 
         try {
             const response = await fetch(`${config.apiUrl}${config.endpoints.createTicket}`, {

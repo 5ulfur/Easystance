@@ -5,6 +5,8 @@ const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");
 const ticketsRoutes = require("./routes/tickets");
 const settingsRoutes = require("./routes/settings")
+const usersRoutes = require("./routes/users");
+const warehouseRoutes = require("./routes/warehouse");
 
 const app = express();
 app.use(express.json());
@@ -22,6 +24,7 @@ app.use("/auth", authRoutes);
 Endpoints:
 /tickets/ticket
 /tickets/list
+/tickets/create
 */
 app.use("/tickets", ticketsRoutes);
 
@@ -34,11 +37,22 @@ Endpoint:
 */
 app.use("/settings", settingsRoutes);
 
+/*
+Endpoints:
+/users/technicians/list
+*/
+app.use("/users", usersRoutes);
+
+/*
+Endpoints:
+/warehouse/list
+*/
+app.use("/warehouse", warehouseRoutes);
+
 app.use((err, req, res, next) => {
     console.error("Errore:", err);
     res.status(500).json({ error: "Errore interno del server" });
 });
-
 
 sequelize
     .authenticate()

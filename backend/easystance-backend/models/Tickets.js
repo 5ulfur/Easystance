@@ -8,11 +8,11 @@ const Tickets = sequelize.define("Tickets", {
         primaryKey: true
     },
     subject: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
         allowNull: false
     },
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false
     },
     category: {
@@ -29,11 +29,19 @@ const Tickets = sequelize.define("Tickets", {
     },
     customerId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: "Customers",
+            key: "id"
+        }
     },
     technicianId: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: true,
+        references: {
+            model: "Employees",
+            key: "id"
+        }
     }
 });
 

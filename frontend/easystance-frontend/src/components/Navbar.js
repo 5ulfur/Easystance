@@ -3,12 +3,13 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
 import logo from "../assets/images/logo.png";
+import Breadcrumb from "./Breadcrumb";
 import "../assets/styles/Navbar.css";
 
 const Navbar = () => {
     const { role } = useAuth();
     
-    const tickets = { title: t(`navbar_values.tickets`), to: "/home" };
+    const tickets = { title: t(`navbar_values.tickets`), to: "/tickets" };
     const technicians = { title: t(`navbar_values.technicians`), to: "/technicians" };
     const agenda = { title: t(`navbar_values.agenda`), to: "/agenda" };
     const warehouse = { title: t(`navbar_values.warehouse`), to: "/warehouse" };
@@ -25,15 +26,18 @@ const Navbar = () => {
     const menu = roleMenu[role] || [{ title: "Login", to: "/login" }];
 
     return (
-        <div className="navbar-container">
-            <img src={logo} alt="Logo"/>
-            <div className="navbar-menu">
-                {menu.map((page, index) => (
-                    <NavLink key={index} to={page.to} className={({ isActive }) => (isActive ? "navbar-item active" : "navbar-item")}>
-                        {page.title}
-                    </NavLink>
-                ))}
+        <div className="navbar">
+            <div className="navbar-container">
+                <img src={logo} alt="Logo"/>
+                <div className="navbar-menu">
+                    {menu.map((page, index) => (
+                        <NavLink key={index} to={page.to} className={({ isActive }) => (isActive ? "navbar-item active" : "navbar-item")}>
+                            {page.title}
+                        </NavLink>
+                    ))}
+                </div>
             </div>
+            <Breadcrumb/>
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import NumberRange from "../components/NumberRange";
 import "../assets/styles/Filters.css";
 
 const Filters = ({ title, filterOptions, onFilterChange }) => {
@@ -28,6 +29,12 @@ const Filters = ({ title, filterOptions, onFilterChange }) => {
                                     {option.label}
                                 </label>
                             ))
+                        ) : filter.type === "range" ? (
+                            <NumberRange
+                                min={filter.options[0].value}
+                                max={filter.options[1].value}
+                                onChange={(e) => onFilterChange(filter.name, e.minValue, e.maxValue)}
+                            />
                         ) : null}
                     </div>
                 </div>
@@ -42,7 +49,7 @@ Filters.propTypes = {
         PropTypes.shape({
             label: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
-            type: PropTypes.oneOf(["text", "checkbox"]).isRequired,
+            type: PropTypes.oneOf(["text", "checkbox", "range"]).isRequired,
             options: PropTypes.arrayOf(
                 PropTypes.shape({
                     label: PropTypes.string.isRequired,

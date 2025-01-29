@@ -31,14 +31,23 @@
         "in_progress": "In corso",
         "closed": "Chiuso"
     },
-    "new_ticket": "NUOVO TICKET",
     "ticket_details": "Dettagli ticket",
+    "new_ticket": "Nuovo ticket",
+    "create_ticket": "Crea ticket",
+    "subject": "Oggetto",
     "description": "Descrizione",
-    "error_no_tickets": "Nessun ticket da mostrare!",
     "roles_values": {
         "customer": "Cliente",
         "administrator": "Amministratore",
         "operator": "Operatore",
         "technician": "Tecnico"
-    }
+    },
+    "customer_email": "E-mail cliente",
+    "assigned_tickets": "Ticket assegnati",
+    "quantity": "Quantità",
+    "error_unauthorized": "Utente non autorizzato!",
+    "error_page_not_found": "Errore 404 - Pagina non trovata!",
+    "error_no_tickets": "Nessun ticket da mostrare!",
+    "error_no_technicians": "Nessun tecnico da mostrare!",
+    "error_no_warehouseitems": "Nessun componente in magazzino da mostrare!"
 }

@@ -11,6 +11,13 @@
   background-color: #cccccc;
 }
 
+.ticket-subject {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 1000px;
+}
+
 .ticket-details {
   margin: 5px 0;
   color: #333333;

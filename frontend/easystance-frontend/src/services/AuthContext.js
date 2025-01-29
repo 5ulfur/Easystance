@@ -11,20 +11,26 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     
-    useEffect(() => {
-        const savedToken = localStorage.getItem("token");
-        if (savedToken) {
-            setToken(savedToken);
-        }
-        setIsLoading(false);
-    }, []);
-
     const clear = useCallback(() => {
         setToken(null);
         setRole(null);
         localStorage.removeItem("token");
         navigate("/login");
     }, [navigate]);
+
+    useEffect(() => {
+        const savedToken = localStorage.getItem("token");
+        if (savedToken) {
+            setToken(savedToken);
+            try {
+                const decoded = jwtDecode(savedToken);
+                setRole(decoded.role);
+            } catch (error) {
+                clear();
+            }
+        }
+        setIsLoading(false);
+    }, [clear]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -37,9 +43,6 @@ export const AuthProvider = ({ children }) => {
     
                 if (!response.ok) {
                     clear();
-                } else {
-                    const decoded = jwtDecode(token);
-                    setRole(decoded.role);
                 }
             } catch (error) {
                 clear();
@@ -61,7 +64,9 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 setToken("Bearer " + data.token);
                 localStorage.setItem("token", "Bearer " + data.token);
-                navigate("/home");
+                const decoded = jwtDecode(data.token);
+                setRole(decoded.role);
+                navigate("/tickets");
             } else {
                 throw new Error(data.error);
             }

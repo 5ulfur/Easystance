@@ -9,7 +9,10 @@ const config = {
         getData: "/settings/data",
         setEmail: "/settings/email",
         setPassword: "/settings/password",
-        deleteProfile: "/settings/delete"
+        deleteProfile: "/settings/delete",
+        createTicket: "/tickets/create",
+        getTechniciansList: "/users/technicians/list",
+        getComponentsList: "/warehouse/list"
     },
     language: "it"
 };

@@ -7,7 +7,6 @@ import Home from "./pages/Home";
 import CreateTicket from "./pages/CreateTicket";
 import TicketDetails from "./pages/TicketDetails";
 import Settings from "./pages/Settings";
-import NotFound from "./pages/NotFound";
 import Technicians from "./pages/Technicians";
 import Warehouse from "./pages/Warehouse";
 import ErrorPage from "./pages/ErrorPage";

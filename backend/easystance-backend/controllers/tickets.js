@@ -1,17 +1,55 @@
 const { Op } = require("sequelize");
-const Tickets = require("../models/Tickets");
-const Customers = require("../models/Customers");
-const Employees = require("../models/Employees");
-const Comments = require("../models/Comments");
-const Actions = require("../models/Actions");
+const { models } = require("../models");
+const { sendEmail } = require("../services/emailService");
 
-Comments.belongsTo(Employees, { foreignKey: "employeeId", as: "employee" });
+function addAction(employeeId, ticketId, category, description) {
+  const action = models.Actions.create({
+    employeeId,
+    ticketId,
+    category,
+    description,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  });
+  return action;
+}
 
-Employees.hasMany(Comments, { foreignKey: "employeeId", as: "comments" });
+async function sendTicketCreatedEmailToCustomer(email, ticket) {
+  const subject = "Easystance - Ticket aperto";
+  const content = `<div>
+  <p>Il tuo ticket è stato aperto con successo!</p>
+  <p>Oggetto: ${ticket.subject}</p>
+  <p>Descrizione: ${ticket.description}</p>
+  <p>Categoria: ${ticket.category}</p>
+  <p>Priorità: ${ticket.priority}</p>
+  <p>Riceverai notifiche per eventi importanti riguardanti il ticket.</p>
+  </div>`;
 
-Actions.belongsTo(Employees, { foreignKey: "employeeId", as: "employee" });
+  sendEmail(email, subject, content);
+}
 
-Employees.hasMany(Actions, { foreignKey: "employeeId", as: "actions" });
+async function sendTicketEditEmailToCustomer(email, actionDescription) {
+  const subject = "Easystance - Ticket modificato";
+  const content = `<div>
+  <p>Il tuo ticket è stato modificato:</p>
+  <p>${actionDescription}</p>
+  </div>`;
+
+  sendEmail(email, subject, content);
+}
+
+async function sendTicketAssignationEmailToTechnician(email, ticket) {
+  const subject = "Easystance - Ticket assegnato";
+  const content = `<div>
+  <p>Ti è stato assegnato un ticket:</p>
+  <p>Oggetto: ${ticket.subject}</p>
+  <p>Descrizione: ${ticket.description}</p>
+  <p>Categoria: ${ticket.category}</p>
+  <p>Priorità: ${ticket.priority}</p>
+  </div>`;
+
+  sendEmail(email, subject, content);
+}
 
 exports.getTicket = async (req, res) => {
   const id = parseInt(req.query.id);
@@ -22,14 +60,14 @@ exports.getTicket = async (req, res) => {
     if (req.user.role === "operator" || req.user.role === "administrator" || req.user.role === "technician") {
       include = [
         {
-          model: Employees,
+          model: models.Employees,
           as: "technician",
           attributes: ["name", "surname", "email"]
         }
       ]
     }
 
-    const ticket = await Tickets.findOne({
+    const ticket = await models.Tickets.findOne({
       where: { id },
       include
     });
@@ -48,6 +86,7 @@ exports.getTicket = async (req, res) => {
       return res.status(404).json({ error: "Nessun ticket con questo id!" });
     }
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 };
@@ -81,7 +120,7 @@ exports.listTickets = async (req, res) => {
       where.status = { [Op.in]: filters.status };
     }
     
-    const { rows: tickets, count } = await Tickets.findAndCountAll({
+    const { rows: tickets, count } = await models.Tickets.findAndCountAll({
       where,
       limit: limit,
       offset: offset,
@@ -93,6 +132,7 @@ exports.listTickets = async (req, res) => {
       hasMore: offset + tickets.length < count
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 };
@@ -105,26 +145,42 @@ exports.createTicket = async (req, res) => {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const customer = await Customers.findOne({ where: { email: ticket.customerEmail } });
+    const customer = await models.Customers.findOne({ where: { email: ticket.customerEmail } });
 
     if (!customer) {
       return res.status(404).json({ error: "Cliente non esistente!" });
     }
 
-    const newTicket = await Tickets.create({
+    let technicianId = null;
+    if (ticket.technicianEmail) {
+      const technician = await models.Employees.findOne({ where: { email: ticket.technicianEmail } });
+
+      if (!technician) {
+        return res.status(404).json({ error: "Tecnico non esistente!" });
+      }
+
+      technicianId = technician.id;
+    }
+
+    const newTicket = await models.Tickets.create({
       subject: ticket.subject,
       description: ticket.description,
       category: ticket.category,
       priority: ticket.priority,
       status: "open",
       customerId: customer.id,
+      technicianId: technicianId,
       createdAt: new Date(),
       updatedAt: new Date()
     });
 
+    await addAction(req.user.id, newTicket.id, "edit", "Ticket creato.");
+
+    sendTicketCreatedEmailToCustomer(customer.email, newTicket);
+
     res.json({ ticketId: newTicket.id });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 };
@@ -138,38 +194,48 @@ exports.editTicket = async (req, res) => {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const ticket = await Tickets.findByPk(id);
+    const ticket = await models.Tickets.findByPk(id);
 
-    let newActionDescription = ""
+    let newActionDescription = "";
+    let newActionCategory = "";
 
     if (ticket) {
+      if (edits.technicianEmail) {
+        const technician = await models.Employees.findOne({ where: { email: edits.technicianEmail, role: "technician" }});
+
+        if (!technician) {
+          return res.status(404).json({ error: "Tecnico non trovato!" });
+        }
+
+        if (ticket.technicianId != technician.id) {
+          ticket.technicianId = technician.id;
+          newActionDescription += `technician changed to ${technician.name} ${technician.surname} (${technician.email})`;
+          newActionCategory = "assignation";
+          addAction(req.user.id, id, newActionCategory, newActionDescription);
+          sendTicketAssignationEmailToTechnician(technician.email, ticket);
+        }
+      }
+
       Object.keys(edits).forEach((key) => {
-        if (edits[key] !== undefined) {
+        if (edits[key] !== undefined && key !== "technicianEmail") {
           ticket[key] = edits[key];
 
-          newActionDescription = [key] + " changed to " + edits[key];
+          newActionDescription = `${key} changed to ${edits[key]}`;
+          let newActionCategory = "edit";
+          addAction(req.user.id, id, newActionCategory, newActionDescription);
+          const customer = models.Customers.findOne({ where: { id: ticket.customerId } });
+          sendTicketEditEmailToCustomer(customer.email, newActionDescription);
         }
       });
-
       ticket["updatedAt"] = new Date();
-
       await ticket.save();
-
-      const newAction = await Actions.create({
-        employeeId: req.user.id,
-        ticketId: id,
-        category: "edit",
-        description: newActionDescription,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
 
       res.json({ message: "Ticket aggiornato!" });
     } else {
       return res.status(404).json({ error: "Nessun ticket con questo id!" });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 };
@@ -179,7 +245,7 @@ exports.getTicketComments = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const ticket = await Tickets.findOne({ where: { id } });
+    const ticket = await models.Tickets.findOne({ where: { id } });
 
     if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
       return res.status(401).json({ error: "Autorizzazione negata!" });
@@ -189,11 +255,11 @@ exports.getTicketComments = async (req, res) => {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const { rows: comments, count } = await Comments.findAndCountAll({
+    const { rows: comments, count } = await models.Comments.findAndCountAll({
       where: { ticketId: id },
       include: [
         {
-          model: Employees,
+          model: models.Employees,
           as: "employee",
           attributes: ["name", "surname", "email"]
         }
@@ -208,7 +274,7 @@ exports.getTicketComments = async (req, res) => {
       hasMore: offset + comments.length < count
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 }
@@ -221,13 +287,13 @@ exports.createTicketComment = async (req, res) => {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const ticket = await Tickets.findOne({ where: { id } });
+    const ticket = await models.Tickets.findOne({ where: { id } });
 
     if (req.user.role === "technician" && req.user.id !== ticket.technicianId) {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const newComment = await Comments.create({
+    const newComment = await models.Comments.create({
       employeeId: req.user.id,
       ticketId: id,
       description: comment,
@@ -237,6 +303,7 @@ exports.createTicketComment = async (req, res) => {
 
     res.json({ id: newComment.id });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 };
@@ -246,7 +313,7 @@ exports.getTicketActions = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const ticket = await Tickets.findOne({ where: { id } });
+    const ticket = await models.Tickets.findOne({ where: { id } });
 
     if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
       return res.status(401).json({ error: "Autorizzazione negata!" });
@@ -256,11 +323,11 @@ exports.getTicketActions = async (req, res) => {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const { rows: actions, count } = await Actions.findAndCountAll({
+    const { rows: actions, count } = await models.Actions.findAndCountAll({
       where: { ticketId: id },
       include: [
         {
-          model: Employees,
+          model: models.Employees,
           as: "employee",
           attributes: ["name", "surname", "email"]
         }
@@ -275,7 +342,7 @@ exports.getTicketActions = async (req, res) => {
       hasMore: offset + actions.length < count
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 }
@@ -288,24 +355,17 @@ exports.createTicketAction = async (req, res) => {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const ticket = await Tickets.findOne({ where: { id } });
+    const ticket = await models.Tickets.findOne({ where: { id } });
 
     if (req.user.role === "technician" && req.user.id !== ticket.technicianId) {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const newAction = await Actions.create({
-      employeeId: req.user.id,
-      ticketId: id,
-      category: action.category,
-      description: action.description,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    });
+    const newAction = await addAction(req.user.id, id, action.category, action.description);
 
     res.json({ id: newAction.id });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: "Errore del server!" });
   }
 };

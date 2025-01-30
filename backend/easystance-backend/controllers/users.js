@@ -1,9 +1,54 @@
 const { Op, literal } = require("sequelize");
-const Employees = require("../models/Employees");
-const Tickets = require("../models/Tickets");
+const { models } = require("../models");
+const { sendEmail } = require("../services/emailService");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
-Employees.hasMany(Tickets, { foreignKey: "technicianId", as: "tickets" });
-Tickets.belongsTo(Employees, { foreignKey: "technicianId", as: "technician" });
+async function sendPasswordEmail(email, password) {
+    const subject = "Benvenuto in Easystance";
+    const content = `<div>
+    <p>Il tuo account è stato creato, queste sono le tue nuove credenziali:</p>
+    <p>E-mail: ${email}</p>
+    <p>Password: ${password}</p>
+    <p>Ricorda di cambiare la password al primo accesso.<p>
+    </div>`;
+
+    sendEmail(email, subject, content);
+}
+
+exports.createCustomer = async (req, res) => {
+    const { customer } = req.body;
+
+    try {
+        if (req.user.role !== "operator" && req.user.role !== "administrator") {
+            return res.status(401).json({ error: "Autorizzazione negata!" });
+        }
+
+        const customerExists = await models.Customers.findOne({ where: { email: customer.email } });
+        if (customerExists) {
+            return res.status(401).json({ error: "Cliente già registrato con questa email!" });
+        }
+
+        const password = crypto.randomBytes(8).toString("hex");
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newCustomer = await models.Customers.create({
+            name: customer.name,
+            surname: customer.surname,
+            email: customer.email,
+            phone: customer.phone,
+            password: hashedPassword
+        });
+
+        sendPasswordEmail(customer.email, password);
+
+        res.json({ id: newCustomer.id, email: newCustomer.email });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Errore del server!" });
+    }
+};
 
 exports.listTechnicians = async (req, res) => {
     const { page, limit, filters } = req.body;
@@ -24,7 +69,7 @@ exports.listTechnicians = async (req, res) => {
             ];
         }
 
-        const { rows: technicians, count } = await Employees.findAndCountAll({
+        const { rows: technicians, count } = await models.Employees.findAndCountAll({
             attributes: {
                 exclude: ["password", "role", "createdAt", "updatedAt"],
                 include: [
@@ -60,6 +105,7 @@ exports.listTechnicians = async (req, res) => {
             hasMore: offset + technicians.length < count
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ error: "Errore del server!" });
     }
 };

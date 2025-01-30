@@ -3,13 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
 import Navbar from "../components/Navbar";
+import NewCustomerModal from "../components/NewCustomerModal";
 import config from "../config/config";
 import "../assets/styles/CreateTicket.css";
 
 const CreateTicket = () => {
     const { token } = useAuth();
+    const navigate = useNavigate();
+    const [isModalNewCustomerOpen, setModalNewCustomerOpen] = useState(false);
     const [newTicket, setNewTicket] = useState({
         customerEmail: "",
+        technicianEmail: "",
         subject: "",
         description: "",
         category: "help",
@@ -17,7 +21,6 @@ const CreateTicket = () => {
         status: "open"
     });
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,25 +49,32 @@ const CreateTicket = () => {
         setNewTicket((prevData) => ({ ...prevData, [name]: value }));
     };
 
+    const handleNewCustomerCreated = (email) => {
+        setNewTicket((prevData) => ({ ...prevData, customerEmail: email }));
+    };
+
     return (
         <div className="page">
             <Navbar/>
             <div className="create-ticket-container">
                 <h2>{t(`new_ticket`)}</h2>
-                <form onSubmit={handleSubmit} className="create-ticket-form-container">
+                <form onSubmit={handleSubmit} className="create-ticket-form">
                     <div className="create-ticket-form-section">
                         <label>
-                            {t(`customer_email`)}:
-                            <input
-                                type="text"
-                                name="customerEmail"
-                                value={newTicket.customerEmail}
-                                onChange={handleChange}
-                                required
-                            />
+                            {t(`customer_email`)}*:
+                            <div className="create-ticket-customer-email">
+                                <input
+                                    type="email"
+                                    name="customerEmail"
+                                    value={newTicket.customerEmail}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <button type="button" onClick={() => setModalNewCustomerOpen(true)}>+</button>
+                            </div>
                         </label>
                         <label>
-                            {t(`subject`)}:
+                            {t(`subject`)}*:
                             <input
                                 type="text"
                                 name="subject"
@@ -75,7 +85,7 @@ const CreateTicket = () => {
                             />
                         </label>
                         <label>
-                            {t(`description`)}:
+                            {t(`description`)}*:
                             <textarea
                                 name="description"
                                 maxLength="1000"
@@ -87,10 +97,10 @@ const CreateTicket = () => {
                     </div>
                     <div className="create-ticket-form-section">
                         <label>
-                            {t(`category`)}:
+                            {t(`category`)}*:
                             <select
                                 name="category"
-                                value={newTicket.priority}
+                                value={newTicket.category}
                                 onChange={handleChange}
                                 required
                             >
@@ -100,7 +110,7 @@ const CreateTicket = () => {
                             </select>
                         </label>
                         <label>
-                            {t(`priority`)}:
+                            {t(`priority`)}*:
                             <select
                                 name="priority"
                                 value={newTicket.priority}
@@ -113,11 +123,25 @@ const CreateTicket = () => {
                                 <option value="critical">{t(`priority_values.critical`)}</option>
                             </select>
                         </label>
+                        <label>
+                            {t(`technician_email`)}:
+                            <input
+                                type="email"
+                                name="technicianEmail"
+                                value={newTicket.technicianEmail}
+                                onChange={handleChange}
+                            />
+                        </label>
                     </div>
                     <button type="submit">{t(`create_ticket`)}</button>
                 </form>
                 {error && <p className="error-box"><strong>{error}</strong></p>}
             </div>
+            <NewCustomerModal
+                isOpen={isModalNewCustomerOpen}
+                onClose={() => setModalNewCustomerOpen(false)}
+                onNewCustomerCreated={handleNewCustomerCreated}
+            />
         </div>
     );
 };

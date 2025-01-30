@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const sequelize = require("./config/database");
+const { sequelize } = require("./models");
 const authRoutes = require("./routes/auth");
 const ticketsRoutes = require("./routes/tickets");
 const settingsRoutes = require("./routes/settings");
@@ -44,6 +44,7 @@ app.use("/settings", settingsRoutes);
 
 /*
 Endpoints:
+/users/customers/create
 /users/technicians/list
 */
 app.use("/users", usersRoutes);

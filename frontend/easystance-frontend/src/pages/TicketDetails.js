@@ -109,14 +109,13 @@ const TicketDetails = () => {
                                 t(`status_values.${ticket.status}`)
                             )}
                         </p>
-
                         { (role === "operator" || role === "administrator" || role === "technician") ? (
                             (ticket.technician && <p><strong>{t(`assigned_to`)}:</strong> <span>{`${ticket.technician.name} ${ticket.technician.surname} (${ticket.technician.email})`}</span></p>) || <p><strong>{t(`assigned_to`)}:</strong> {t(`none`)}</p>
                         ) : (
                             (ticket.technician && <p><strong>{t(`assigned_to`)}:</strong> {t(`technician`)}</p>) || <p><strong>{t(`assigned_to`)}:</strong> {t(`none`)}</p>
                         )}
                     </div>
-                    <ActionSection id={id} />
+                    { (role === "operator" || role === "administrator" || role === "technician") && <ActionSection id={id} /> }
                 </div>
                 { (role === "operator" || role === "administrator" || role === "technician") && <CommentSection id={id} /> }
             </div>

@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const Components = require("../models/Components");
+const { models } = require("../models");
 
 exports.listComponents = async (req, res) => {
     const { page, limit, filters } = req.body;
@@ -18,7 +18,7 @@ exports.listComponents = async (req, res) => {
 
         where.quantity = { [Op.between]: [filters.quantity.min, filters.quantity.max] };
       
-        const { rows: components, count } = await Components.findAndCountAll({
+        const { rows: components, count } = await models.Components.findAndCountAll({
             where,
             limit: limit,
             offset: offset,
@@ -30,7 +30,7 @@ exports.listComponents = async (req, res) => {
             hasMore: offset + components.length < count
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(500).json({ error: "Errore del server!" });
     }
 };

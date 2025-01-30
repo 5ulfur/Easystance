@@ -9,7 +9,7 @@ import "../assets/styles/ActionSection.css";
 const ActionSection = ({ id }) => {
     const { token } = useAuth();
     const [newAction, setNewAction] = useState({
-        category: "assignation",
+        category: "call",
         description: ""
     });
     const [error, setError] = useState(null);
@@ -57,7 +57,7 @@ const ActionSection = ({ id }) => {
             if (response.ok) {
                 reload();
                 setNewAction({
-                    category: "assignation",
+                    category: "call",
                     description: ""
                 });
             } else {
@@ -83,8 +83,8 @@ const ActionSection = ({ id }) => {
                     onChange={handleChangeAction}
                     required
                 >
-                    <option value="assignation">{t(`action_category_values.assignation`)}</option>
-                    <option value="edit">{t(`action_category_values.edit`)}</option>
+                    {/* <option value="assignation">{t(`action_category_values.assignation`)}</option>
+                    <option value="edit">{t(`action_category_values.edit`)}</option> */}
                     <option value="call">{t(`action_category_values.call`)}</option>
                     <option value="repair">{t(`action_category_values.repair`)}</option>
                     <option value="document">{t(`action_category_values.document`)}</option>

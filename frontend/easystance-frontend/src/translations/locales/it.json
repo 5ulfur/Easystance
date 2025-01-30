@@ -52,6 +52,7 @@
     "quantity": "Quantità",
     "comments": "Commenti",
     "send": "Invia",
+    "assign": "Assegna",
     "actions": "Azioni eseguite",
     "action_category_values": {
         "assignation": "Assegnazione",

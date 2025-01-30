@@ -1,6 +1,7 @@
 const { Op, literal } = require("sequelize");
 const { models } = require("../models");
 const { sendEmail } = require("../services/emailService");
+const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
 async function sendPasswordEmail(email, password) {
@@ -29,13 +30,15 @@ exports.createCustomer = async (req, res) => {
         }
 
         const password = crypto.randomBytes(8).toString("hex");
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const newCustomer = await models.Customers.create({
             name: customer.name,
             surname: customer.surname,
             email: customer.email,
             phone: customer.phone,
-            password: password
+            password: hashedPassword
         });
 
         sendPasswordEmail(customer.email, password);

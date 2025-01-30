@@ -54,6 +54,7 @@ const NewCustomerModal = ({ isOpen, onClose, onNewCustomerCreated }) => {
                         <input
                             type="text"
                             name="name"
+                            maxLength="255"
                             value={newCustomer.name}
                             onChange={handleChange}
                             required
@@ -64,6 +65,7 @@ const NewCustomerModal = ({ isOpen, onClose, onNewCustomerCreated }) => {
                         <input
                             type="text"
                             name="surname"
+                            maxLength="255"
                             value={newCustomer.surname}
                             onChange={handleChange}
                             required
@@ -74,6 +76,7 @@ const NewCustomerModal = ({ isOpen, onClose, onNewCustomerCreated }) => {
                         <input
                             type="text"
                             name="email"
+                            maxLength="255"
                             value={newCustomer.email}
                             onChange={handleChange}
                             required
@@ -84,6 +87,7 @@ const NewCustomerModal = ({ isOpen, onClose, onNewCustomerCreated }) => {
                         <input
                             type="text"
                             name="phone"
+                            maxLength="255"
                             value={newCustomer.phone}
                             onChange={handleChange}
                             required

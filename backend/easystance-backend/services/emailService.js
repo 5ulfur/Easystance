@@ -36,8 +36,8 @@ exports.sendEmail = async (to, subject, content) => {
             html: content
         });
 
-        console.log(`Email inviata: ${info.messageId}`);
-        console.log(`Anteprima: ${nodemailer.getTestMessageUrl(info)}`);
+        //console.log(`Email inviata: ${info.messageId}`);
+        //console.log(`Anteprima: ${nodemailer.getTestMessageUrl(info)}`);
         return info;
     } catch (error) {
         console.log(error);

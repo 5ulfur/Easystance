@@ -1,8 +1,9 @@
 const { Op } = require("sequelize");
 const { models } = require("../models");
+const { sendEmail } = require("../services/emailService");
 
-async function addAction(employeeId, ticketId, category, description) {
-  const action = await models.Actions.create({
+function addAction(employeeId, ticketId, category, description) {
+  const action = models.Actions.create({
     employeeId,
     ticketId,
     category,
@@ -11,6 +12,43 @@ async function addAction(employeeId, ticketId, category, description) {
     updatedAt: new Date()
   });
   return action;
+}
+
+async function sendTicketCreatedEmailToCustomer(email, ticket) {
+  const subject = "Easystance - Ticket aperto";
+  const content = `<div>
+  <p>Il tuo ticket è stato aperto con successo!</p>
+  <p>Oggetto: ${ticket.subject}</p>
+  <p>Descrizione: ${ticket.description}</p>
+  <p>Categoria: ${ticket.category}</p>
+  <p>Priorità: ${ticket.priority}</p>
+  <p>Riceverai notifiche per eventi importanti riguardanti il ticket.</p>
+  </div>`;
+
+  sendEmail(email, subject, content);
+}
+
+async function sendTicketEditEmailToCustomer(email, actionDescription) {
+  const subject = "Easystance - Ticket modificato";
+  const content = `<div>
+  <p>Il tuo ticket è stato modificato:</p>
+  <p>${actionDescription}</p>
+  </div>`;
+
+  sendEmail(email, subject, content);
+}
+
+async function sendTicketAssignationEmailToTechnician(email, ticket) {
+  const subject = "Easystance - Ticket assegnato";
+  const content = `<div>
+  <p>Ti è stato assegnato un ticket:</p>
+  <p>Oggetto: ${ticket.subject}</p>
+  <p>Descrizione: ${ticket.description}</p>
+  <p>Categoria: ${ticket.category}</p>
+  <p>Priorità: ${ticket.priority}</p>
+  </div>`;
+
+  sendEmail(email, subject, content);
 }
 
 exports.getTicket = async (req, res) => {
@@ -138,6 +176,8 @@ exports.createTicket = async (req, res) => {
 
     await addAction(req.user.id, newTicket.id, "edit", "Ticket creato.");
 
+    sendTicketCreatedEmailToCustomer(customer.email, newTicket);
+
     res.json({ ticketId: newTicket.id });
   } catch (error) {
     console.error(error);
@@ -156,20 +196,39 @@ exports.editTicket = async (req, res) => {
 
     const ticket = await models.Tickets.findByPk(id);
 
-    let newActionDescription = ""
+    let newActionDescription = "";
+    let newActionCategory = "";
 
     if (ticket) {
+      if (edits.technicianEmail) {
+        const technician = await models.Employees.findOne({ where: { email: edits.technicianEmail, role: "technician" }});
+
+        if (!technician) {
+          return res.status(404).json({ error: "Tecnico non trovato!" });
+        }
+
+        if (ticket.technicianId != technician.id) {
+          ticket.technicianId = technician.id;
+          newActionDescription += `technician changed to ${technician.name} ${technician.surname} (${technician.email})`;
+          newActionCategory = "assignation";
+          addAction(req.user.id, id, newActionCategory, newActionDescription);
+          sendTicketAssignationEmailToTechnician(technician.email, ticket);
+        }
+      }
+
       Object.keys(edits).forEach((key) => {
-        if (edits[key] !== undefined) {
+        if (edits[key] !== undefined && key !== "technicianEmail") {
           ticket[key] = edits[key];
 
-          newActionDescription = [key] + " changed to " + edits[key];
+          newActionDescription = `${key} changed to ${edits[key]}`;
+          let newActionCategory = "edit";
+          addAction(req.user.id, id, newActionCategory, newActionDescription);
+          const customer = models.Customers.findOne({ where: { id: ticket.customerId } });
+          sendTicketEditEmailToCustomer(customer.email, newActionDescription);
         }
       });
       ticket["updatedAt"] = new Date();
       await ticket.save();
-
-      addAction(req.user.id, id, "edit", newActionDescription);
 
       res.json({ message: "Ticket aggiornato!" });
     } else {
@@ -302,7 +361,7 @@ exports.createTicketAction = async (req, res) => {
       return res.status(401).json({ error: "Autorizzazione negata!" });
     }
 
-    const newAction = addAction(req.user.id, id, action.category, action.description);
+    const newAction = await addAction(req.user.id, id, action.category, action.description);
 
     res.json({ id: newAction.id });
   } catch (error) {

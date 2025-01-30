@@ -1,3 +1,4 @@
+import React from "react";
 import { t } from "../translations/translations";
 import "../assets/styles/Ticket.css";
 

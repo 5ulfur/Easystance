@@ -1,4 +1,4 @@
-import React,  { useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { debounce } from "lodash";
 import { useAuth } from "../services/AuthContext";
 import useLazyLoading from "../services/LazyLoading";
@@ -10,17 +10,21 @@ import config from "../config/config";
 import "../assets/styles/Warehouse.css";
 
 const Warehouse = () => {
-    const { token } = useAuth();
+    const { token, role } = useAuth();
+    const [newWarehouseItem, setNewWarehouseItem] = useState({
+        name: "",
+        quantity: 0
+    });
     const [error, setError] = useState(null);
     const listRef = useRef(null);
     const limit = 20;
     const [filters, setFilters] = useState({
-            word: "",
-            quantity: {
-                min: 0,
-                max: 1000
-            }
-        });
+        word: "",
+        quantity: {
+            min: 0,
+            max: 1000
+        }
+    });
     
     const filterOptions = [
         {
@@ -90,6 +94,39 @@ const Warehouse = () => {
         [handleFilterChange]
     );
 
+    useEffect(() => {
+        return () => {
+            debouncedFilterChange.cancel();
+        };
+    }, [debouncedFilterChange]);
+
+    const handleSubmitNewWarehouseItem = async (e) => {
+        e.preventDefault();
+        setError(null);
+
+        try {
+            const response = await fetch(`${config.apiUrl}${config.endpoints.createComponent}`, {
+                method: "POST",
+                headers: { "Authorization": token, "Content-Type": "application/json" },
+                body: JSON.stringify({ component: newWarehouseItem })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                window.location.reload(false);
+            } else {
+                setError(data.error);
+            }
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    const handleChangeNewWarehouseItem = (e) => {
+        const { name, value } = e.target;
+        setNewWarehouseItem((prevData) => ({ ...prevData, [name]: value }));
+    };
+
     return (
         <div className="page">
             <Navbar/>
@@ -99,15 +136,42 @@ const Warehouse = () => {
                     filterOptions={filterOptions}
                     onFilterChange={debouncedFilterChange}
                 />
-                <main className="warehouse-list" ref={listRef} onScroll={handleScroll}>
-                    {warehouseitems.map((warehouseitem) => (
-                        <WarehouseItem
-                            key={warehouseitem.id}
-                            name={warehouseitem.name}
-                            quantity={warehouseitem.quantity}
-                        />
-                    ))}
+                <main className="warehouse-list-container">
+                    {(role === "administrator") && 
+                        (<form onSubmit={handleSubmitNewWarehouseItem}>
+                            <h3>Aggiungi nuovo componente</h3>
+                            <input
+                                type="text"
+                                name="name"
+                                maxLength="255"
+                                placeholder={t(`component`)}
+                                value={newWarehouseItem.name}
+                                onChange={handleChangeNewWarehouseItem}
+                                required
+                            />
+                            <input
+                                type="number"
+                                name="quantity"
+                                min="0"
+                                max="1000"
+                                value={newWarehouseItem.quantity}
+                                onChange={handleChangeNewWarehouseItem}
+                                required
+                            />
+                            <button type="submit">{t(`add`)}</button>
+                        </form>)
+                    }
                     {error && <p className="error-box"><strong>{error}</strong></p>}
+                    <div className="warehouse-list" ref={listRef} onScroll={handleScroll}>
+                        {warehouseitems.map((warehouseitem) => (
+                            <WarehouseItem
+                                key={warehouseitem.id}
+                                id={warehouseitem.id}
+                                name={warehouseitem.name}
+                                quantity={warehouseitem.quantity}
+                            />
+                        ))}
+                    </div>
                 </main>
             </div>
         </div>

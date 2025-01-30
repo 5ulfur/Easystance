@@ -54,7 +54,7 @@ const NewCustomerModal = ({ isOpen, onClose, onNewCustomerCreated }) => {
                         <input
                             type="text"
                             name="name"
-                            maxLength="255"
+                            maxLength="50"
                             value={newCustomer.name}
                             onChange={handleChange}
                             required
@@ -65,7 +65,7 @@ const NewCustomerModal = ({ isOpen, onClose, onNewCustomerCreated }) => {
                         <input
                             type="text"
                             name="surname"
-                            maxLength="255"
+                            maxLength="50"
                             value={newCustomer.surname}
                             onChange={handleChange}
                             required

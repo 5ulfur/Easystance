@@ -1,5 +1,4 @@
-const Employees = require("../models/Employees");
-const Customers = require("../models/Customers");
+const { models } = require("../models");
 const bcrypt = require("bcrypt");
 
 
@@ -10,9 +9,9 @@ exports.getUserData = async (req, res) => {
 
     try {
         if (role === "customer") {
-            data = await Customers.findOne({ where: { id } });
+            data = await models.Customers.findOne({ where: { id } });
         } else {
-            data = await Employees.findOne({ where: { id } });
+            data = await models.Employees.findOne({ where: { id } });
         }
         
         if (data) {
@@ -27,6 +26,7 @@ exports.getUserData = async (req, res) => {
         }
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ error: "Errore del server!" });
     }
 };
@@ -39,9 +39,9 @@ exports.setEmail = async (req, res) => {
 
     try {
         if (role === "customer") {
-            data = await Customers.findByPk( id );
+            data = await models.Customers.findByPk( id );
         } else {
-            data = await Employees.findByPk( id );
+            data = await models.Employees.findByPk( id );
         }
 
         if (!data) {
@@ -64,6 +64,7 @@ exports.setEmail = async (req, res) => {
         res.status(200).json({ message: "Email o numero aggiornati con successo" });
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ error: "Errore del server!" });
     }
 };
@@ -76,9 +77,9 @@ exports.setPassword = async (req, res) => {
 
     try {
         if (role === "customer") {
-            user = await Customers.findByPk( id );
+            user = await models.Customers.findByPk( id );
         } else {
-            user = await Employees.findByPk( id );
+            user = await models.Employees.findByPk( id );
         }
 
         if (!user) {
@@ -103,6 +104,7 @@ exports.setPassword = async (req, res) => {
         }
         
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ error: "Errore del server!" });
     }
 };
@@ -112,7 +114,7 @@ exports.deleteProfile = async (req, res) => {
     const id = req.user.id;
     
     try {
-        let user = await Customers.findByPk( id );
+        let user = await models.Customers.findByPk( id );
 
         if (!user) {
             return res.status(404).json({ error: "Cliente non trovato" });
@@ -129,6 +131,7 @@ exports.deleteProfile = async (req, res) => {
         res.status(200).json({ message: "Profilo eliminato!" });
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ error: "Errore del server!" });
     }
 };

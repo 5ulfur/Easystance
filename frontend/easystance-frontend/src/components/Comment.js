@@ -1,3 +1,4 @@
+import React from "react";
 import "../assets/styles/Comment.css";
 
 const Comment = ({ author, date, description }) => {

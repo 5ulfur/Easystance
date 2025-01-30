@@ -18,7 +18,9 @@ const config = {
         createAction: "/tickets/actions/create",
         createCustomer: "/users/customers/create",
         getTechniciansList: "/users/technicians/list",
-        getComponentsList: "/warehouse/list"
+        getComponentsList: "/warehouse/list",
+        createComponent: "/warehouse/create",
+        setQuantity: "/warehouse/quantity"
     },
     language: "it"
 };

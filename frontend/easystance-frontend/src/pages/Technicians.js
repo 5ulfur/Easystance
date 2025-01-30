@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { debounce } from "lodash";
 import { Link } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
@@ -90,6 +90,12 @@ const Technicians = () => {
             }, 300),
         [handleFilterChange]
     );
+
+    useEffect(() => {
+        return () => {
+            debouncedFilterChange.cancel();
+        };
+    }, [debouncedFilterChange]);
     
     return (
         <div className="page">
@@ -101,6 +107,7 @@ const Technicians = () => {
                     onFilterChange={debouncedFilterChange}
                 />
                 <main className="technicians-list" ref={listRef} onScroll={handleScroll}>
+                    {error && <p className="error-box"><strong>{error}</strong></p>}
                     {technicians.map((technician) => (
                         <Link to={`/technicians/${technician.id}`} key={technician.id} className="technicians-list-item">
                             <Technician
@@ -111,7 +118,6 @@ const Technicians = () => {
                             />
                         </Link>
                     ))}
-                    {error && <p className="error-box"><strong>{error}</strong></p>}
                 </main>
             </div>
         </div>

@@ -13,6 +13,7 @@
     "filters": "Filtri",
     "search": "Cerca",
     "category": "Categoria",
+    "magazine_objects": "Ogetti in magazzino",
     "category_values": {
         "help": "Aiuto",
         "repair": "Riparazione",
@@ -30,6 +31,17 @@
         "open": "Aperto",
         "in_progress": "In corso",
         "closed": "Chiuso"
+    },
+    "management": "Gestione",
+    "management_values": {
+        "ticket": "Ticket",
+        "efficency": "Efficienza", 
+        "warehouse": "Magazzino"
+    },
+    "card_titles": {
+        "ticket_created": "Ticket creati",
+        "ticket_resolved": "Ticket risolti",
+        "ticket_not_resolved": "Ticket non risolti"
     },
     "ticket_details": "Dettagli ticket",
     "new_ticket": "Nuovo ticket",

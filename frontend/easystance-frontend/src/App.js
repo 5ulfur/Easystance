@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import CreateTicket from "./pages/CreateTicket";
 import TicketDetails from "./pages/TicketDetails";
+import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import Technicians from "./pages/Technicians";
 import Warehouse from "./pages/Warehouse";
@@ -75,6 +76,15 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/reports"
+            element= {
+              <PrivateRoute roles={["administrator", "operator", "technician", "customer"]}>
+                <Reports />
+              </PrivateRoute>
+            }>
+
+          </Route>
           <Route
             path="/settings"
             element= {

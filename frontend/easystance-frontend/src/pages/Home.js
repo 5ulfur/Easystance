@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
 import { useAuth } from "../services/AuthContext";
@@ -62,6 +62,8 @@ const Home = () => {
   ];
 
   const getTickets = useCallback(async (page, limit) => {
+    setError(null);
+
     const response = await fetch(`${config.apiUrl}${config.endpoints.getTicketsList}`, {
       method: "POST",
       headers: { "Authorization": token , "Content-Type": "application/json" },
@@ -72,8 +74,6 @@ const Home = () => {
     if (response.ok) {
       if (data.tickets.length === 0) {
         setError(t(`error_no_tickets`));
-      } else {
-        setError(null);
       }
 
       return { data: data.tickets, hasMore: data.hasMore };
@@ -113,6 +113,12 @@ const Home = () => {
     [handleFilterChange]
   );
 
+  useEffect(() => {
+    return () => {
+      debouncedFilterChange.cancel();
+    };
+  }, [debouncedFilterChange]);
+
   return (
     <div className="page">
       <Navbar/>
@@ -126,6 +132,7 @@ const Home = () => {
           <div className="new-ticket-button-container">
             {(role === "operator" || role === "administrator") && <Link to="/tickets/create"><button>{t(`new_ticket`)}</button></Link>}
           </div>
+          {error && <p className="error-box"><strong>{error}</strong></p>}
           <div className="tickets-list" ref={listRef} onScroll={handleScroll}>
             {tickets.map((ticket) => (
               <Link to={`/tickets/${ticket.id}`} key={ticket.id} className="tickets-list-item">
@@ -137,7 +144,6 @@ const Home = () => {
                 />
               </Link>
             ))}
-            {error && <p className="error-box"><strong>{error}</strong></p>}
           </div>
         </main>
       </div>

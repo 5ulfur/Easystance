@@ -11,7 +11,7 @@ const Navbar = () => {
     
     const tickets = { title: t(`navbar_values.tickets`), to: "/tickets" };
     const technicians = { title: t(`navbar_values.technicians`), to: "/technicians" };
-    const agenda = { title: t(`navbar_values.agenda`), to: "/agenda" };
+    const agenda = { title: t(`navbar_values.agenda`), to: "/technicians/" }; //Aggiungere id
     const warehouse = { title: t(`navbar_values.warehouse`), to: "/warehouse" };
     const reports = { title: t(`navbar_values.reports`), to: "/reports" };
     const settings = { title: t(`navbar_values.settings`), to: "/settings" };

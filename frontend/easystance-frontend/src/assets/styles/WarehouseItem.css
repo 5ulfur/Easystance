@@ -7,6 +7,15 @@
     transition: background-color 0.3s ease;
 }
 
+.warehouseitem div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.warehouseitem div span {
+    color: #727272;
+}
+
 .warehouseitem:hover {
     background-color: #cccccc;
 }

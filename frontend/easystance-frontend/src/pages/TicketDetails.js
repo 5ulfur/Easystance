@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import { t } from "../translations/translations";
 import Navbar from "../components/Navbar";
@@ -11,8 +11,10 @@ import "../assets/styles/TicketDetails.css";
 const TicketDetails = () => {
     const { id } = useParams();
     const { token, role } = useAuth();
+    const navigate = useNavigate();
     const [ticket, setTicket] = useState({});
     const [error, setError] = useState(null);
+    const [newAssign, setNewAssign] = useState("");
 
     useEffect(() => {
         const getTicket = async () => {
@@ -24,16 +26,19 @@ const TicketDetails = () => {
                 const data = await response.json();
                 if (response.ok) {
                     setTicket(data.ticket);
+                    if (data.ticket.technician) {
+                        setNewAssign(data.ticket.technician.email);
+                    }
                 } else {
-                    //ERRORE O UNAUTH
+                    navigate(`/unauthorized`);
                 }
             } catch (error) {
-                console.log(error);
+                setError(error.message)
             }
         };
 
         getTicket();
-    }, [token, id, role]);
+    }, [token, id, role, navigate]);
 
     const handleSubmitTicketEdit = async (name, value) => {
         try {
@@ -57,6 +62,15 @@ const TicketDetails = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         handleSubmitTicketEdit(name, value);
+    };
+
+    const handleChangeAssignation = async (e) => {
+        const { value } = e.target;
+        setNewAssign(value)
+    };
+
+    const handleSubmitAssignation = async () => {
+        handleSubmitTicketEdit("technicianEmail", newAssign);
     };
 
     return (
@@ -110,13 +124,44 @@ const TicketDetails = () => {
                             )}
                         </p>
 
-                        { (role === "operator" || role === "administrator" || role === "technician") ? (
-                            (ticket.technician && <p><strong>{t(`assigned_to`)}:</strong> <span>{`${ticket.technician.name} ${ticket.technician.surname} (${ticket.technician.email})`}</span></p>) || <p><strong>{t(`assigned_to`)}:</strong> {t(`none`)}</p>
+                        {(role === "operator" || role === "administrator") ? (
+                            (ticket.technician && 
+                            <p>
+                                <strong>{t(`assigned_to`)}:</strong> <span>{`${ticket.technician.name} ${ticket.technician.surname}`}</span>
+                                <input
+                                    type="email"
+                                    name="technicianEmail"
+                                    value={newAssign}
+                                    onChange={handleChangeAssignation}
+                                />
+                                <button onClick={handleSubmitAssignation}>{t(`assign`)}</button>
+                            </p>) || <p>
+                                <strong>{t(`assigned_to`)}:</strong>
+                                <input
+                                    type="email"
+                                    name="technicianEmail"
+                                    value={newAssign}
+                                    onChange={handleChangeAssignation}
+                                />
+                                <button onClick={handleSubmitAssignation}>{t(`assign`)}</button>
+                            </p>
+                        ) : (role === "technician") ? (
+                            (ticket.technician && 
+                            <p>
+                                <strong>{t(`assigned_to`)}:</strong> <span>{`${ticket.technician.name} ${ticket.technician.surname} (${ticket.technician.email})`}</span>
+                            </p>) || <p>
+                                <strong>{t(`assigned_to`)}:</strong> {t(`none`)}
+                            </p>
                         ) : (
-                            (ticket.technician && <p><strong>{t(`assigned_to`)}:</strong> {t(`technician`)}</p>) || <p><strong>{t(`assigned_to`)}:</strong> {t(`none`)}</p>
+                            (ticket.technician && 
+                            <p>
+                                <strong>{t(`assigned_to`)}:</strong> {t(`technician`)}
+                            </p>) || <p>
+                                <strong>{t(`assigned_to`)}:</strong> {t(`none`)}
+                            </p>
                         )}
                     </div>
-                    <ActionSection id={id} />
+                    { (role === "operator" || role === "administrator" || role === "technician") && <ActionSection id={id} /> }
                 </div>
                 { (role === "operator" || role === "administrator" || role === "technician") && <CommentSection id={id} /> }
             </div>

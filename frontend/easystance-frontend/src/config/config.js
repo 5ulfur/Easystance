@@ -16,9 +16,12 @@ const config = {
         createComment: "/tickets/comments/create",
         getActions: "/tickets/actions/list",
         createAction: "/tickets/actions/create",
+        createCustomer: "/users/customers/create",
         getTechniciansList: "/users/technicians/list",
         getComponentsList: "/warehouse/list",
-        getStatus: "/reports/status"
+        getStatus: "/reports/status",
+        createComponent: "/warehouse/create",
+        setQuantity: "/warehouse/quantity"
     },
     language: "it"
 };

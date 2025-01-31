@@ -9,6 +9,7 @@ import TicketDetails from "./pages/TicketDetails";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import Technicians from "./pages/Technicians";
+import Agenda from "./pages/Agenda";
 import Warehouse from "./pages/Warehouse";
 import ErrorPage from "./pages/ErrorPage";
 import "./App.css";
@@ -65,6 +66,14 @@ function App() {
             element={
               <PrivateRoute roles={["administrator", "operator"]}>
                 <Technicians />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/technicians/:id"
+            element={
+              <PrivateRoute roles={["administrator", "operator", "technician"]}>
+                <Agenda />
               </PrivateRoute>
             }
           />

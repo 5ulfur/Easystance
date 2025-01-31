@@ -46,15 +46,15 @@ const Reports = () => {
                     <div className="container-cards">
                         <Card 
                             titleCard = {t(`card_titles.ticket_created`)}
-                            valueCard = {"vcihqbnwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwekcnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnncccccccccccccccccccccccccccccccccccccccccccccccccc"}
+                            valueCard = {"665"}
                         />
                         <Card
                             titleCard = {t(`card_titles.ticket_resolved`)}
-                            valueCard = {"12"}
+                            valueCard = {"142"}
                         />
                         <Card
                             titleCard = {t(`card_titles.ticket_not_resolved`)}
-                            valueCard = {"12"}
+                            valueCard = {"293"}
                         />
                     </div>
                     <Graphs 

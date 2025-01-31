@@ -109,3 +109,38 @@ exports.listTechnicians = async (req, res) => {
         return res.status(500).json({ error: "Errore del server!" });
     }
 };
+
+exports.createEmployee = async (req, res) => {
+    const { role, name, surname, email, phone } = req.body;
+
+    try {
+        if (req.user.role !== "administrator") {
+            return res.status(401).json({ error: "Autorizzazione negata!" });
+        }
+
+        const employeeExists = await models.Employees.findOne({ where: { email: email } });
+        if (employeeExists) {
+            return res.status(401).json({ error: "Operatore già registrato con questa email!" });
+        }
+
+        const password = crypto.randomBytes(8).toString("hex");
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newEmployee = await models.Employees.create ({
+            name: name,
+            surname: surname,
+            email: email,
+            phone: phone,
+            role: role,
+            password: hashedPassword
+        })
+
+        sendPasswordEmail(email, password);
+
+        res.json({ id: newEmployee.id, email: newEmployee.email });
+    } catch {
+        return res.status(500).json({ error: "Errore del server!" });
+    }
+
+}

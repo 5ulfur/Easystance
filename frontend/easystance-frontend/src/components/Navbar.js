@@ -14,10 +14,11 @@ const Navbar = () => {
     const agenda = { title: t(`navbar_values.agenda`), to: "/technicians/" }; //Aggiungere id
     const warehouse = { title: t(`navbar_values.warehouse`), to: "/warehouse" };
     const reports = { title: t(`navbar_values.reports`), to: "/reports" };
+    const add = { title: t(`navbar_values.add`), to: "/add" };
     const settings = { title: t(`navbar_values.settings`), to: "/settings" };
     
     const roleMenu = {
-        administrator: [tickets, technicians, warehouse, reports, settings],
+        administrator: [tickets, technicians, warehouse, reports, add, settings],
         operator: [tickets, technicians, warehouse, settings],
         technician: [tickets, agenda, warehouse, settings],
         customer: [tickets, settings]

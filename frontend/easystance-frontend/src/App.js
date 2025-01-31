@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import CreateTicket from "./pages/CreateTicket";
 import TicketDetails from "./pages/TicketDetails";
 import Reports from "./pages/Reports";
+import Add from "./pages/Add";
 import Settings from "./pages/Settings";
 import Technicians from "./pages/Technicians";
 import Agenda from "./pages/Agenda";
@@ -88,7 +89,7 @@ function App() {
           <Route
             path="/reports"
             element= {
-              <PrivateRoute roles={["administrator", "operator", "technician", "customer"]}>
+              <PrivateRoute roles={["administrator"]}>
                 <Reports />
               </PrivateRoute>
             }>
@@ -99,6 +100,14 @@ function App() {
             element= {
               <PrivateRoute roles={["administrator", "operator", "technician", "customer"]}>
                 <Settings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/add"
+            element= {
+              <PrivateRoute roles={["administrator"]}>
+                <Add />
               </PrivateRoute>
             }
           />

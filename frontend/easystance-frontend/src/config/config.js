@@ -17,9 +17,13 @@ const config = {
         getActions: "/tickets/actions/list",
         createAction: "/tickets/actions/create",
         createCustomer: "/users/customers/create",
+        createEmployee: "/users/employee/create",
         getTechniciansList: "/users/technicians/list",
         getComponent: "/warehouse/component",
         getComponentsList: "/warehouse/list",
+        getTicketsStatus: "/reports/tickets/status",
+        getTicketsInfo: "/reports/tickets/info",
+        getWarehouseInfo: "/reports/warehouse/info",
         createComponent: "/warehouse/create",
         setQuantity: "/warehouse/quantity"
     },

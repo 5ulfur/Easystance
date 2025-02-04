@@ -15,7 +15,7 @@ exports.getUserData = async (req, res) => {
         }
         
         if (data) {
-            res.json( {
+            res.json({
                 name: data.name,
                 surname: data.surname,
                 email: data.email,

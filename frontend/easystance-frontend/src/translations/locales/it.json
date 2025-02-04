@@ -8,6 +8,7 @@
         "agenda": "AGENDA",
         "warehouse": "MAGAZZINO",
         "reports": "REPORTS",
+        "add": "AGGIUNGI",
         "settings": "IMPOSTAZIONI"
     },
     "filters": "Filtri",
@@ -31,6 +32,23 @@
         "in_progress": "In corso",
         "closed": "Chiuso"
     },
+    "management": "Gestione",
+    "management_values": {
+        "ticket": "Ticket",
+        "efficency": "Efficienza", 
+        "warehouse": "Magazzino"
+    },
+    "card_titles": {
+        "ticket_created": "Ticket creati",
+        "ticket_resolved": "Ticket risolti",
+        "ticket_not_resolved": "Ticket non risolti",
+        "monthly_tickets_created": "Ticket creati ultimo mese",
+        "tickets_actions": "Azioni medie eseguite per ogni ticket",
+        "average_comments": "Commenti interni medi per ogni ticket",
+        "number_item": "Numero articoli in magazzino",
+        "greater_item": "Articolo con maggiore disponibilità (nome articolo)",
+        "least_item_add": "Ultimo articolo aggiunto al magazzino (nome articolo)"
+    },
     "ticket_details": "Dettagli ticket",
     "new_ticket": "Nuovo ticket",
     "create_ticket": "Crea ticket",
@@ -44,7 +62,7 @@
     },
     "customer_email": "E-mail cliente",
     "technician_email": "Assegna a (E-mail tecnico)",
-    "name": "Name",
+    "name": "Nome",
     "surname": "Cognome",
     "email": "Email",
     "phone": "Telefono",
@@ -54,6 +72,7 @@
     "assigned_tickets": "Ticket assegnati",
     "assigned_to": "Assegnato a",
     "technician": "Tecnico",
+    "employee": "Dipendente",
     "none": "Nessuno",
     "component": "Componente",
     "quantity": "Quantità",

@@ -3,6 +3,7 @@
     padding: 15px;
     overflow-y: auto;
     border-right: 10px solid #dbdbdb;
+    width: 15%;
 }
 
 .filters-container h2 {

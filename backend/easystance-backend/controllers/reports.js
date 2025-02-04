@@ -32,7 +32,7 @@ exports.getTicketsStatus = async (req, res) => {
         return res.status(401).json( {error: "Autorizzazione negata!"} );
       }
 
-      const createdTicket = await models.Tickets.count({ where: {} });
+      //const createdTicket = await models.Tickets.count({ where: {} });
       const ticketAction = await models.Actions.count();
       const ticketsComments = await models.Comments.count();
       const tickets = await models.Tickets.count();

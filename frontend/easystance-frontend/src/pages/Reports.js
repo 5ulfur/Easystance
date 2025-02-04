@@ -11,7 +11,7 @@ import "../assets/styles/Reports.css";
 
 
 const Reports = () => {
-    const { token, role } = useAuth();
+    const { token } = useAuth();
     const [showManagementTicket, setShowManagementTicket] = useState(true);
     const [showManagementEfficency, setShowManagementEfficency] = useState(false);
     const [showManagementWarehouse, setShowManagementWarehouse] = useState(false);
@@ -58,6 +58,8 @@ const Reports = () => {
                         setAverageComment(Math.floor((ticketsInfo.averageComment)*100)/100);
                         setAverageAction(Math.floor((ticketsInfo.averageAction)*100)/100);
                         setMonthlyTicketsCreated(ticketsInfo.createdTicket);
+                    } else {
+                        alert (response.json().error);
                     }
         
                 } catch (error) {
@@ -82,7 +84,10 @@ const Reports = () => {
                         setNumberItem(warehouseInfo.numberItem);
                         setLastItem(warehouseInfo.lastItem.name);
                         setGreaterItem(warehouseInfo.greaterItem.name);
+                    } else {
+                        alert (response.json().error);
                     }
+
                 } catch (error) {
                     alert(error);
                 }
@@ -112,7 +117,9 @@ const Reports = () => {
 
                 setStatusClosed(ticketsStatus.ticketsStatusClosed);
                 setStatusNotClosed(ticketsStatus.ticketsStatusNotClosed);
-                setStatusAll(statusClosed+statusNotClosed);
+                setStatusAll(ticketsStatus.allTicketsStatus);
+            } else {
+                alert (response.json().error);
             }
 
         } catch (error) {
@@ -123,7 +130,7 @@ const Reports = () => {
     
     return (
         <div className="page">
-            <Navbar role = {role}/>
+            <Navbar/>
             <div className="container-reports">
                 <Filters 
                     title={t(`management`)}

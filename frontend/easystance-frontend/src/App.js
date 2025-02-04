@@ -92,9 +92,8 @@ function App() {
               <PrivateRoute roles={["administrator"]}>
                 <Reports />
               </PrivateRoute>
-            }>
-
-          </Route>
+            }
+          />
           <Route
             path="/settings"
             element= {

@@ -120,7 +120,7 @@ exports.createEmployee = async (req, res) => {
 
         const employeeExists = await models.Employees.findOne({ where: { email: email } });
         if (employeeExists) {
-            return res.status(401).json({ error: "Operatore già registrato con questa email!" });
+            return res.status(401).json({ error: "Dipendente già registrato con questa email!" });
         }
 
         const password = crypto.randomBytes(8).toString("hex");

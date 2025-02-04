@@ -11,12 +11,9 @@ exports.getTicketsStatus = async (req, res) => {
 
       const ticketsStatusNotClosed = await models.Tickets.count({ where: { status: { [Op.not]: "closed" } } });
       const ticketsStatusClosed = await models.Tickets.count({ where: { status: "closed" } });
+      const allTicketsStatus = ticketsStatusClosed + ticketsStatusNotClosed;
   
-      if (ticketsStatusNotClosed && ticketsStatusClosed) {
-        res.json({ ticketsStatusNotClosed, ticketsStatusClosed });
-      } else {
-        return res.status(404).json({ error: "Nessun ticket trovato" });
-      }
+      res.json({ ticketsStatusNotClosed, ticketsStatusClosed, allTicketsStatus });
   
     } catch (error) {
       console.error(error);
@@ -41,11 +38,7 @@ exports.getTicketsStatus = async (req, res) => {
       const averageComment = ticketsComments/tickets;
       const averageAction = ticketAction/tickets;
 
-      if (ticketsComments && tickets) {
-        res.json({ averageComment, averageAction, createdTicket });
-      } else {
-        return res.status(404).json({ error: "Informazioni non trovate" });
-      }
+      res.json({ averageComment, averageAction, createdTicket });
 
     } catch (error) {
       console.error(error);
@@ -57,19 +50,15 @@ exports.getTicketsStatus = async (req, res) => {
     const role = req.user.role;
 
     try {
-      /*if (role !== "administrator") {
+      if (role !== "administrator") {
         return res.status(401).json( {error: "Autorizzazione negata!"} );
-      }*/
+      }
 
       const numberItem = await models.Components.count();
       const lastItem = await models.Components.findOne({ order: [["id", "DESC"]] });
       const greaterItem = await models.Components.findOne({ order: [["quantity", "DESC"]] });
 
-      if (numberItem && lastItem && greaterItem) {
-        res.json({ numberItem, lastItem, greaterItem });
-      } else {
-        return res.status(404).json({ error: "Informazioni non trovate" });
-      }
+      res.json({ numberItem, lastItem, greaterItem });
 
     } catch (error) {
       console.error(error);

@@ -7,7 +7,6 @@ import "../assets/styles/Add.css";
 
 const Add = () => {
     const { token } = useAuth();
-    const [error, setError] = useState(null);
     const [role, setRole] = useState("");    
     const [name, setName] = useState("");
     const [surname, setSurame] = useState("");
@@ -28,12 +27,11 @@ const Add = () => {
             if (response.ok) {
                 alert("Dipendente aggiunto con successo!");
             } else {
-                alert(error);
-                setError(data.error)
+                alert(data.error);
             }
 
         } catch (error) {
-            alert(error);
+            alert(error.message);
         }
 
     }

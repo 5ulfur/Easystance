@@ -210,6 +210,39 @@ def populate_actions(connection, n_actions=10):
     except Error as e:
         print(f"Errore durante l'inserimento delle azioni: {e}")
 
+def populate_actionscomponents(connection, n_actionscomponents=10):
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT id FROM actions")
+        actions_ids = [row[0] for row in cursor.fetchall()]
+        if not actions_ids:
+            print("Nessuna azione trovata nel database per collegare le actionscomponents.")
+            return
+
+        cursor.execute("SELECT id FROM components")
+        components_ids = [row[0] for row in cursor.fetchall()]
+        if not components_ids:
+            print("Nessun componente trovato nel database per collegare le actionscomponents.")
+            return
+        
+        actionscomponents = []
+        for _ in range(n_actionscomponents):
+            action_id = random.choice(actions_ids)
+            component_id = random.choice(components_ids)
+            quantity = random.randrange(0, 20)
+            created_at = updated_at = gen_random_date()
+            actionscomponents.append((action_id, component_id, quantity, created_at, updated_at))
+
+        cursor.executemany(
+            "INSERT INTO actionscomponents (actionId, componentId, quantity, createdAt, updatedAt) VALUES (%s, %s, %s, %s, %s)",
+            actionscomponents
+        )
+        connection.commit()
+        print(f"Inserite {n_actionscomponents} actionscomponents casuali con successo")        
+    except Error as e:
+        print(f"Errore durante l'inserimento delle actionscomponents: {e}")
+
 def main():
     connection = create_connection()
     if connection:
@@ -219,6 +252,7 @@ def main():
         populate_components(connection, n_components=50)
         populate_comments(connection, n_comments=500)
         populate_actions(connection, n_actions=750)
+        populate_actionscomponents(connection, n_actionscomponents=300)
         connection.close()
 
 if __name__ == "__main__":

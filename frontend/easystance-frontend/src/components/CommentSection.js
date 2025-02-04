@@ -14,6 +14,8 @@ const CommentSection = ({ id }) => {
     const limit = 10;
     
     const getComments = useCallback(async (page, limit) => {
+        setError(null);
+
         const response = await fetch(`${config.apiUrl}${config.endpoints.getComments}`, {
             method: "POST",
             headers: { "Authorization": token , "Content-Type": "application/json" },

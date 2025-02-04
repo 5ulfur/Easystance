@@ -41,6 +41,8 @@ const Technicians = () => {
     ];
 
     const getTechnicians = useCallback(async (page, limit) => {
+        setError(null);
+        
         const response = await fetch(`${config.apiUrl}${config.endpoints.getTechniciansList}`, {
             method: "POST",
             headers: { "Authorization": token , "Content-Type": "application/json" },

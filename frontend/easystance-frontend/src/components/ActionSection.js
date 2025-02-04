@@ -21,6 +21,8 @@ const ActionSection = ({ id }) => {
     const limit = 20;
 
     const getActions = useCallback(async (page, limit) => {
+        setError(null);
+
         const response = await fetch(`${config.apiUrl}${config.endpoints.getActions}`, {
             method: "POST",
             headers: { "Authorization": token , "Content-Type": "application/json" },

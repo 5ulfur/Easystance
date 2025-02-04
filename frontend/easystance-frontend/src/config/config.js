@@ -18,6 +18,7 @@ const config = {
         createAction: "/tickets/actions/create",
         createCustomer: "/users/customers/create",
         getTechniciansList: "/users/technicians/list",
+        getComponent: "/warehouse/component",
         getComponentsList: "/warehouse/list",
         createComponent: "/warehouse/create",
         setQuantity: "/warehouse/quantity"

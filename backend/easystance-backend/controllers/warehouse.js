@@ -1,6 +1,27 @@
 const { Op } = require("sequelize");
 const { models } = require("../models");
 
+exports.getComponent = async (req, res) => {
+    const id = parseInt(req.query.id);
+
+    try {
+        if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
+            return res.status(401).json({ error: "Autorizzazione negata!" });
+        }
+
+        const component = await models.Components.findByPk(id);
+
+        if (component) {
+            res.json({ component });
+        } else {
+            return res.status(404).json({ error: "Nessun componente con questo id!" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Errore del server!" });
+    }
+};
+
 exports.listComponents = async (req, res) => {
     const { page, limit, filters } = req.body;
     const offset = (page - 1) * limit;

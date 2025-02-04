@@ -330,7 +330,19 @@ exports.getTicketActions = async (req, res) => {
           model: models.Employees,
           as: "employee",
           attributes: ["name", "surname", "email"]
-        }
+        },
+        {
+          model: models.ActionsComponents,
+          as: "actionsComponents",
+          include: [
+            {
+              model: models.Components,
+              as: "component",
+              attributes: ["id", "name", "quantity"],
+            },
+          ],
+          attributes: ["quantity"]
+        },
       ],
       limit: limit,
       offset: offset,
@@ -362,6 +374,24 @@ exports.createTicketAction = async (req, res) => {
     }
 
     const newAction = await addAction(req.user.id, id, action.category, action.description);
+
+    for (const key of Object.keys(action.components)) {
+      await models.ActionsComponents.create({
+        actionId: newAction.id,
+        componentId: action.components[key].id,
+        quantity: action.components[key].quantity,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      const component = await models.Components.findByPk(action.components[key].id);
+      component.update (
+        {
+          quantity: component.quantity - action.components[key].quantity,
+          updateAt: new Date()
+        }
+      );
+    }
 
     res.json({ id: newAction.id });
   } catch (error) {

@@ -38,6 +38,12 @@ const setupAssociations = () => {
 
     models.Actions.belongsTo(models.Tickets, { foreignKey: "ticketId", as: "ticket" });
     models.Tickets.hasMany(models.Actions, { foreignKey: "ticketId", as: "action" });
+
+    models.ActionsComponents.belongsTo(models.Actions, { foreignKey: "actionId", as: "action" });
+    models.Actions.hasMany(models.ActionsComponents, { foreignKey: "actionId", as: "actionsComponents" });
+    
+    models.ActionsComponents.belongsTo(models.Components, { foreignKey: "componentId", as: "component" });
+    models.Components.hasMany(models.ActionsComponents, { foreignKey: "componentId", as: "actionsComponents" });
 };
 
 setupAssociations();

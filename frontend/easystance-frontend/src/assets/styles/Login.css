@@ -50,6 +50,7 @@
     border: 1px solid #999999;
     border-radius: 4px;
     font-size: 14px;
+    margin-right: -35px;
 }
 
 .login-form button {
@@ -66,4 +67,13 @@
 
 .login-form button:hover {
     background-color: #0056b3;
+}
+
+.login-form .password-box {
+    display: flex;
+}
+
+.login-form .password-box span {
+    padding: 8px;
+    cursor: pointer;
 }

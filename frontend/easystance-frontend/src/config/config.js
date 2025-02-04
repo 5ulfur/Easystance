@@ -20,7 +20,8 @@ const config = {
         createEmployee: "/users/employee/create",
         getTechniciansList: "/users/technicians/list",
         getComponentsList: "/warehouse/list",
-        getStatus: "/reports/status",
+        getTicketsStatus: "/reports/tickets/status",
+        getTicketsInfo: "/reports/tickets/info",
         createComponent: "/warehouse/create",
         setQuantity: "/warehouse/quantity"
     },

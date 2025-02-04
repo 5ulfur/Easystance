@@ -1,26 +1,52 @@
-const Graphs = require("../models/Graphs");
-const Tickets = require("../models/Tickets");
+const { models } = require("../models");
+const { Op } = require("sequelize");
 
-exports.getStatus = async (req, res) => {
+exports.getTicketsStatus = async (req, res) => {
+    const role = req.user.role;
+  
+    try {
+      if (role !== "administrator") {
+        return res.status(401).json( {error: "Autorizzazione negata!"} );
+      }
+
+      const ticketsStatusNotClosed = await models.Tickets.count({ where: { status: { [Op.not]: "closed" } } });
+      const ticketsStatusClosed = await models.Tickets.count({ where: { status: "closed" } });
+  
+      if (ticketsStatusNotClosed && ticketsStatusClosed) {
+        res.json({ ticketsStatusNotClosed, ticketsStatusClosed });
+      } else {
+        return res.status(404).json({ error: "Nessun ticket trovato" });
+      }
+  
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Errore del server!" });
+    }
+  };
+
+  exports.getTicketsInfo = async (req, res) => {
+    const role = req.user.role
 
     try {
-        let dataOpen = await Tickets.findAndCountAll( { where: {status: 'open'} } );
-        let dataInProgress = await Tickets.findAndCountAll( { where: {status: 'in_progress'} } );
-        let dataClosed = await Tickets.findAndCountAll( { where: {status: 'closed'} } );
+      if (role !== "administrator") {
+        return res.status(401).json( {error: "Autorizzazione negata!"} );
+      }
 
-        //{status: {[Op.in]: ['open', 'in_progress', 'closed']}}
+      const createdTicket = await models.Tickets.count({ where: {} });
+      const ticketAction = await models.Actions.count();
+      const ticketsComments = await models.Comments.count();
+      const tickets = await models.Tickets.count();
+      const averageComment = ticketsComments/tickets;
+      const averageAction = ticketAction/tickets;
 
-        if (dataOpen && dataInProgress && dataClosed) {
-            console.log("test riuscito");
-            res.json({
-                count_open: dataOpen,
-                count_in_progress: dataInProgress,
-                count_closed: dataClosed
-            })
-        }
+      if (ticketsComments && tickets) {
+        res.json({ averageComment, averageAction });
+      } else {
+        return res.status(404).json({ error: "Informazioni non trovate" });
+      }
 
     } catch (error) {
-        console.log("test non riuscito");
-        return res.status(500).json({ error: "Errore del server!" });   
+      console.error(error);
+      return res.status(500).json({ error: "Errore del server!" });
     }
-};
+  }

@@ -42,7 +42,13 @@
     "card_titles": {
         "ticket_created": "Ticket creati",
         "ticket_resolved": "Ticket risolti",
-        "ticket_not_resolved": "Ticket non risolti"
+        "ticket_not_resolved": "Ticket non risolti",
+        "monthly_tickets_created": "Ticket creati ultimo mese",
+        "tickets_actions": "Azioni medie eseguite per ogni ticket",
+        "average_comments": "Commenti interni medi per ogni ticket",
+        "most_item": "Articolo più utilizzato (codice articolo)",
+        "least_item": "Articolo meno utilizzato (codice articolo)",
+        "least_item_add": "Ultimo articolo aggiunto al magazzino (codice articolo)"
     },
     "ticket_details": "Dettagli ticket",
     "new_ticket": "Nuovo ticket",

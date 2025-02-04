@@ -1,10 +1,13 @@
 const express = require("express");
-const { getGraphs, getStatus } = require("../controllers/reports");
+const { getTicketsStatus, getTicketsInfo } = require("../controllers/reports");
 const { verifyToken } = require("../controllers/auth");
 
 const router = express.Router();
 
-// Endpoint: /reports/status
-router.get("/status", verifyToken, getStatus);
+// Endopoint: reports/tickets/status
+router.get("/tickets/status", verifyToken, getTicketsStatus);
+
+// Endpoint: reports/tickets/info
+router.get("/tickets/info", verifyToken, getTicketsInfo);
 
 module.exports = router;

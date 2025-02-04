@@ -36,6 +36,7 @@ app.use("/tickets", ticketsRoutes);
 
 /*
 Endpoint:
+/reports/tickets/status
 /reports/status
 */
 app.use("/reports", reportsRoutes);

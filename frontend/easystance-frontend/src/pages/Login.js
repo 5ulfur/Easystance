@@ -7,6 +7,7 @@ import "../assets/styles/Login.css";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const { login } = useAuth();
 
@@ -17,6 +18,10 @@ const Login = () => {
         } catch (error) {
             setError(error.message);
         }
+    };
+
+    const togglePasswordShow = () => {
+        setShowPassword((prevState) => !prevState);
     };
 
     return (
@@ -35,13 +40,18 @@ const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
+                    <div className="password-box">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <span onClick={togglePasswordShow}>
+                            {showPassword ? '🛇' : '👁'}
+                        </span>
+                    </div>
                     <button type="submit">{t(`login`)}</button>
                     {error && <p className="error-box"><strong>{error}</strong></p>}
                 </form>

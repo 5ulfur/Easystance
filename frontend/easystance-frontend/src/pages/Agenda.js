@@ -8,8 +8,7 @@ const Agenda = () => {
         <div className="page">
             <Navbar/>
 
-
-            
+            <h1 className="error-box error-page-message">COMING SOON</h1>
         </div>
     );
 };

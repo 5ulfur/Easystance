@@ -44,6 +44,8 @@ const Warehouse = () => {
     ];
 
     const getWarehouseItems = useCallback(async (page, limit) => {
+        setError(null);
+
         const response = await fetch(`${config.apiUrl}${config.endpoints.getComponentsList}`, {
             method: "POST",
             headers: { "Authorization": token , "Content-Type": "application/json" },

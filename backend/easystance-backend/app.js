@@ -59,6 +59,7 @@ app.use("/users", usersRoutes);
 
 /*
 Endpoints:
+/warehouse/component
 /warehouse/list
 /warehouse/create
 /warehouse/quantity

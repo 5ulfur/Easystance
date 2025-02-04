@@ -1,8 +1,11 @@
 const express = require("express");
-const { listComponents, createComponent, setQuantity } = require("../controllers/warehouse");
+const { getComponent, listComponents, createComponent, setQuantity } = require("../controllers/warehouse");
 const { verifyToken } = require("../controllers/auth");
 
 const router = express.Router();
+
+// Endpoint: /warehouse/component
+router.get("/component", verifyToken, getComponent);
 
 // Endpoint: /warehouse/list
 router.post("/list", verifyToken, listComponents);

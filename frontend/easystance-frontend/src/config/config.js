@@ -19,6 +19,7 @@ const config = {
         createCustomer: "/users/customers/create",
         createEmployee: "/users/employee/create",
         getTechniciansList: "/users/technicians/list",
+        getComponent: "/warehouse/component",
         getComponentsList: "/warehouse/list",
         getTicketsStatus: "/reports/tickets/status",
         getTicketsInfo: "/reports/tickets/info",

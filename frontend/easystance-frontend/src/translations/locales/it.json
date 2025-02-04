@@ -90,9 +90,15 @@
     },
     "performed_by": "effettuata da",
     "on_date": "in data",
+    "add_used_components": "Aggiungi componenti utilizzati",
+    "used_components": "Componenti utilizzati",
+    "component_code": "Codice componente",
+    "components": "Componenti",
     "error_unauthorized": "Utente non autorizzato!",
     "error_page_not_found": "Errore 404 - Pagina non trovata!",
     "error_no_tickets": "Nessun ticket da mostrare!",
     "error_no_technicians": "Nessun tecnico da mostrare!",
-    "error_no_warehouseitems": "Nessun componente in magazzino da mostrare!"
+    "error_no_warehouseitems": "Nessun componente in magazzino da mostrare!",
+    "error_not_enough_components": "Non ci sono abbastanza componenti in magazzino!",
+    "error_component_already_inserted": "Componente già inserito!"
 }

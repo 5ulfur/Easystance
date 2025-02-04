@@ -25,14 +25,16 @@ exports.getTicketsStatus = async (req, res) => {
   };
 
   exports.getTicketsInfo = async (req, res) => {
-    const role = req.user.role
+    const role = req.user.role;
 
     try {
       if (role !== "administrator") {
         return res.status(401).json( {error: "Autorizzazione negata!"} );
       }
 
-      //const createdTicket = await models.Tickets.count({ where: {} });
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const createdTicket = await models.Tickets.count({ where: { createdAt: {[Op.gte]: thirtyDaysAgo} } });
       const ticketAction = await models.Actions.count();
       const ticketsComments = await models.Comments.count();
       const tickets = await models.Tickets.count();
@@ -40,7 +42,7 @@ exports.getTicketsStatus = async (req, res) => {
       const averageAction = ticketAction/tickets;
 
       if (ticketsComments && tickets) {
-        res.json({ averageComment, averageAction });
+        res.json({ averageComment, averageAction, createdTicket });
       } else {
         return res.status(404).json({ error: "Informazioni non trovate" });
       }
@@ -49,4 +51,28 @@ exports.getTicketsStatus = async (req, res) => {
       console.error(error);
       return res.status(500).json({ error: "Errore del server!" });
     }
-  }
+  };
+
+  exports.getWarehouseInfo = async (req, res) => {
+    const role = req.user.role;
+
+    try {
+      /*if (role !== "administrator") {
+        return res.status(401).json( {error: "Autorizzazione negata!"} );
+      }*/
+
+      const numberItem = await models.Components.count();
+      const lastItem = await models.Components.findOne({ order: [["id", "DESC"]] });
+      const greaterItem = await models.Components.findOne({ order: [["quantity", "DESC"]] });
+
+      if (numberItem && lastItem && greaterItem) {
+        res.json({ numberItem, lastItem, greaterItem });
+      } else {
+        return res.status(404).json({ error: "Informazioni non trovate" });
+      }
+
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Errore del server!" });
+    }
+  };

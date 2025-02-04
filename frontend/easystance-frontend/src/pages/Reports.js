@@ -17,8 +17,13 @@ const Reports = () => {
     const [showManagementWarehouse, setShowManagementWarehouse] = useState(false);
     const [statusClosed, setStatusClosed] = useState();
     const [statusNotClosed, setStatusNotClosed] = useState();
+    const [statusAll, setStatusAll] = useState();
     const [averageComment, setAverageComment] = useState();
     const [averageAction, setAverageAction] = useState();
+    const [monthlyTicketsCreated, setMonthlyTicketsCreated] = useState();
+    const [numberItem, setNumberItem] = useState();
+    const [lastItem, setLastItem] = useState();
+    const [greaterItem, setGreaterItem] = useState();
 
     const filterOptions = [   
         {
@@ -33,30 +38,12 @@ const Reports = () => {
     ];
 
     const selectFilter = async ( name, value, isChecked ) => {
-
         if ( value === "ticket" && isChecked === true ) {
-            const getTicketStatus = async () => {
-
-                try {
-                    const response = await fetch(`${config.apiUrl}${config.endpoints.getTicketsStatus}`, {
-                        headers: { "Authorization": token }
-                    });
-        
-                    if (response.ok) {
-                        const ticketsStatus = await response.json();
-        
-                        setStatusClosed(ticketsStatus.ticketsStatusClosed);
-                        setStatusNotClosed(ticketsStatus.ticketsStatusNotClosed);
-                    }
-        
-                } catch (error) {
-                    alert(error);
-                }
-            };
             getTicketStatus();
             setShowManagementTicket(true);
             setShowManagementEfficency(false);
-            setShowManagementWarehouse(false);          
+            setShowManagementWarehouse(false);       
+
         } else if ( value === "efficency" && isChecked === true ) {
             const getTicketInfo = async () => {
 
@@ -70,6 +57,7 @@ const Reports = () => {
 
                         setAverageComment(Math.floor((ticketsInfo.averageComment)*100)/100);
                         setAverageAction(Math.floor((ticketsInfo.averageAction)*100)/100);
+                        setMonthlyTicketsCreated(ticketsInfo.createdTicket);
                     }
         
                 } catch (error) {
@@ -80,14 +68,35 @@ const Reports = () => {
             setShowManagementTicket(false);
             setShowManagementEfficency(true);
             setShowManagementWarehouse(false);
+
         } else if (value === "warehouse" && isChecked === true ) {
+            const getWarehouseInfo = async () => {
+
+                try {
+                    const response = await fetch(`${config.apiUrl}${config.endpoints.getWarehouseInfo}`, {
+                        headers: { "Authorization": token }
+                    })
+                    if (response.ok) {
+                        const warehouseInfo = await response.json();
+
+                        setNumberItem(warehouseInfo.numberItem);
+                        setLastItem(warehouseInfo.lastItem.name);
+                        setGreaterItem(warehouseInfo.greaterItem.name);
+                    }
+                } catch (error) {
+                    alert(error);
+                }
+            };
+            getWarehouseInfo();
             setShowManagementTicket(false);
             setShowManagementEfficency(false);
             setShowManagementWarehouse(true);
+
         } else {
-            setShowManagementTicket(false);
+            setShowManagementTicket(true);
             setShowManagementEfficency(false);
             setShowManagementWarehouse(false);
+
         }
     };
 
@@ -103,6 +112,7 @@ const Reports = () => {
 
                 setStatusClosed(ticketsStatus.ticketsStatusClosed);
                 setStatusNotClosed(ticketsStatus.ticketsStatusNotClosed);
+                setStatusAll(statusClosed+statusNotClosed);
             }
 
         } catch (error) {
@@ -126,7 +136,7 @@ const Reports = () => {
                             <div className="container-cards">
                                 <Card 
                                     titleCard = {t(`card_titles.ticket_created`)}
-                                    valueCard = {statusClosed + statusNotClosed}
+                                    valueCard = {statusAll}
                                 />
                                 <Card
                                     titleCard = {t(`card_titles.ticket_resolved`)}
@@ -155,7 +165,7 @@ const Reports = () => {
                             <div className="container-cards">
                                 <Card 
                                     titleCard = {t(`card_titles.monthly_tickets_created`)}
-                                    valueCard = {statusClosed + statusNotClosed}
+                                    valueCard = {monthlyTicketsCreated}
                                 />
                                 <Card
                                     titleCard = {t(`card_titles.tickets_actions`)}
@@ -183,16 +193,16 @@ const Reports = () => {
                         <div>
                             <div className="container-cards">
                                 <Card 
-                                    titleCard = {t(`card_titles.most_item`)}
-                                    valueCard = {statusClosed + statusNotClosed}
+                                    titleCard = {t(`card_titles.number_item`)}
+                                    valueCard = {numberItem}
                                 />
                                 <Card
-                                    titleCard = {t(`card_titles.least_item`)}
-                                    valueCard = {statusClosed}
+                                    titleCard = {t(`card_titles.greater_item`)}
+                                    valueCard = {greaterItem}
                                 />
                                 <Card
                                     titleCard = {t(`card_titles.least_item_add`)}
-                                    valueCard = {statusNotClosed}
+                                    valueCard = {lastItem}
                                 />
                             </div>
                             <div className="container-charts">

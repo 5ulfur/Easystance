@@ -6,7 +6,7 @@
     width: 95%;
     height: 90%;
     box-shadow: 3px 3px #00000085;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .card:hover {

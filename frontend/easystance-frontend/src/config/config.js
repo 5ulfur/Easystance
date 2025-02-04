@@ -23,6 +23,7 @@ const config = {
         getComponentsList: "/warehouse/list",
         getTicketsStatus: "/reports/tickets/status",
         getTicketsInfo: "/reports/tickets/info",
+        getWarehouseInfo: "/reports/warehouse/info",
         createComponent: "/warehouse/create",
         setQuantity: "/warehouse/quantity"
     },

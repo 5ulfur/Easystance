@@ -46,9 +46,9 @@
         "monthly_tickets_created": "Ticket creati ultimo mese",
         "tickets_actions": "Azioni medie eseguite per ogni ticket",
         "average_comments": "Commenti interni medi per ogni ticket",
-        "most_item": "Articolo più utilizzato (codice articolo)",
-        "least_item": "Articolo meno utilizzato (codice articolo)",
-        "least_item_add": "Ultimo articolo aggiunto al magazzino (codice articolo)"
+        "number_item": "Numero articoli in magazzino",
+        "greater_item": "Articolo con maggiore disponibilità (nome articolo)",
+        "least_item_add": "Ultimo articolo aggiunto al magazzino (nome articolo)"
     },
     "ticket_details": "Dettagli ticket",
     "new_ticket": "Nuovo ticket",

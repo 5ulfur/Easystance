@@ -8,15 +8,21 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [accountType, setAccountType] = useState("");
+    const [showConflictOptions, setShowConflictOptions] = useState(false);
     const [error, setError] = useState("");
     const { login } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password);
+            await login(email, password, accountType);
         } catch (error) {
             setError(error.message);
+            if (error.cause === 400) {
+                setAccountType("customer");
+                setShowConflictOptions(true);
+            }
         }
     };
 
@@ -54,6 +60,16 @@ const Login = () => {
                     </div>
                     <button type="submit">{t(`login`)}</button>
                     {error && <p className="error-box"><strong>{error}</strong></p>}
+                    {showConflictOptions && (
+                        <select
+                            value={accountType}
+                            onChange={(e) => setAccountType(e.target.value)}
+                            required
+                        >
+                            <option value="customer">{t(`roles_values.customer`)}</option>
+                            <option value="employee">{t(`employee`)}</option>
+                        </select>
+                    )}
                 </form>
             </div>
         </div>

@@ -52,12 +52,12 @@ export const AuthProvider = ({ children }) => {
         checkAuth();
     }, [token, clear]);
 
-    const login = async (email, password) => {
+    const login = async (email, password, accountType) => {
         try {
             const response = await fetch(`${config.apiUrl}${config.endpoints.login}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password, accountType })
             });
 
             const data = await response.json();
@@ -68,7 +68,9 @@ export const AuthProvider = ({ children }) => {
                 setRole(decoded.role);
                 navigate("/tickets");
             } else {
-                throw new Error(data.error);
+                const error = new Error(data.error);
+                error.cause = response.status;
+                throw error;
             }
         } catch (error) {
             throw error;

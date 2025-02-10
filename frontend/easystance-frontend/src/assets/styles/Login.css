@@ -77,3 +77,10 @@
     padding: 8px;
     cursor: pointer;
 }
+
+.login-form select {
+    margin-top: 20px;
+    padding: 5px;
+    border: 1px solid #999999;
+    border-radius: 4px;
+}

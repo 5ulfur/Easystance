@@ -28,10 +28,11 @@ async function sendTicketCreatedEmailToCustomer(email, ticket) {
   sendEmail(email, subject, content);
 }
 
-async function sendTicketEditEmailToCustomer(email, actionDescription) {
+async function sendTicketEditEmailToCustomer(email, ticketSubject, actionDescription) {
   const subject = "Easystance - Ticket modificato";
   const content = `<div>
   <p>Il tuo ticket è stato modificato:</p>
+  <p>Oggetto: ${ticketSubject}</p>
   <p>${actionDescription}</p>
   </div>`;
 
@@ -177,6 +178,9 @@ exports.createTicket = async (req, res) => {
     await addAction(req.user.id, newTicket.id, "edit", "Ticket creato.");
 
     sendTicketCreatedEmailToCustomer(customer.email, newTicket);
+    if (newTicket.technicianId) {
+      sendTicketAssignationEmailToTechnician(ticket.technicianEmail, ticket);
+    }
 
     res.json({ ticketId: newTicket.id });
   } catch (error) {
@@ -216,17 +220,18 @@ exports.editTicket = async (req, res) => {
         }
       }
 
-      Object.keys(edits).forEach((key) => {
+      for (const key of Object.keys(edits)) {
         if (edits[key] !== undefined && key !== "technicianEmail") {
           ticket[key] = edits[key];
 
           newActionDescription = `${key} changed to ${edits[key]}`;
           let newActionCategory = "edit";
           addAction(req.user.id, id, newActionCategory, newActionDescription);
-          const customer = models.Customers.findOne({ where: { id: ticket.customerId } });
-          sendTicketEditEmailToCustomer(customer.email, newActionDescription);
+          const customer = await models.Customers.findOne({ where: { id: ticket.customerId } });
+          sendTicketEditEmailToCustomer(customer.email, ticket.subject, newActionDescription);
         }
-      });
+      }
+
       ticket["updatedAt"] = new Date();
       await ticket.save();
 

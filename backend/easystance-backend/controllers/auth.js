@@ -38,17 +38,31 @@ exports.verifyToken = async (req, res, next) => {
 };
 
 exports.login = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, accountType } = req.body;
     try {
-        let user = await models.Customers.findOne({ where: { email } });
-        let role = "customer";
-        if (!user) {
-            user = await models.Employees.findOne({ where: {email} });
-            if (user) {
-                role = user.role;
-            } else {
-                return res.status(401).json({ error: "Email o password non validi!" });
-            }
+        let customer = await models.Customers.findOne({ where: { email } });
+        let employee = await models.Employees.findOne({ where: { email } });
+
+        if (customer && employee && !accountType) {
+            return res.status(400).json({ error: "Specifica il tipo di account!" });
+        }
+
+        let user;
+        let role;
+        if (accountType === "customer" && customer) {
+            user = customer;
+            role = "customer";
+        } else if (accountType === "employee" && employee) {
+            user = employee;
+            role = user.role; 
+        } else if (customer) {
+            user = customer;
+            role = "customer";
+        } else if (employee) {
+            user = employee;
+            role = user.role;
+        } else {
+            return res.status(401).json({ error: "Email o password non validi!" });
         }
 
         if (role === "customer" && user.flag === true) {

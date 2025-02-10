@@ -38,7 +38,11 @@ exports.getTicketsStatus = async (req, res) => {
       const averageComment = ticketsComments/tickets;
       const averageAction = ticketAction/tickets;
 
-      res.json({ averageComment, averageAction, createdTicket });
+      if (averageAction == 'null' && averageComment == 'null') {
+        res.json({ averageComment: 0, averageAction: 0, createdTicket});
+      } else {
+        res.json({ averageComment, averageAction, createdTicket });
+      }
 
     } catch (error) {
       console.error(error);
@@ -58,7 +62,11 @@ exports.getTicketsStatus = async (req, res) => {
       const lastItem = await models.Components.findOne({ order: [["id", "DESC"]] });
       const greaterItem = await models.Components.findOne({ order: [["quantity", "DESC"]] });
 
-      res.json({ numberItem, lastItem, greaterItem });
+      if (numberItem === 0) {
+        res.json({ numberItem, lastItem: {name: "magazzino vuoto"}, greaterItem: {name: "magazzino vuoto"}});
+      } else {
+        res.json({ numberItem, lastItem, greaterItem });
+      }
 
     } catch (error) {
       console.error(error);

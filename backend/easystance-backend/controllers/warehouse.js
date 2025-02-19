@@ -32,9 +32,12 @@ exports.listComponents = async (req, res) => {
         if (req.user.role !== "operator" && req.user.role !== "administrator" && req.user.role !== "technician") {
             return res.status(401).json({ error: "Autorizzazione negata!" });
         }
-        
+
         if (filters.word) {
-            where.name = { [Op.like]: `%${filters.word}%` };
+            where[Op.or] = [
+                { name: { [Op.like]: `%${filters.word}%` } },
+                { id: { [Op.like]: `%${filters.word}%` } }
+            ];
         }
 
         where.quantity = { [Op.between]: [filters.quantity.min, filters.quantity.max] };

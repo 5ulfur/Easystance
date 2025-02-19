@@ -7,7 +7,7 @@ import "../assets/styles/Add.css";
 
 const Add = () => {
     const { token } = useAuth();
-    const [role, setRole] = useState("");    
+    const [role, setRole] = useState("Technician");    
     const [name, setName] = useState("");
     const [surname, setSurame] = useState("");
     const [email, setEmail] = useState("");
